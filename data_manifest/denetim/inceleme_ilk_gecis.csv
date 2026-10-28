@@ -1,0 +1,97 @@
+audit_id,n_eksik_gorunur,n_eksik_kapsamdisi,kayma,n_sinif_hata,not
+A001,2,0,1,0,"kar ortulu sonrasi; B1 kahverengi catili yapi (~480,115 tam sayfa px) ve D1 kucuk yapi etiketsiz; D1/D2 insaat alani sayilmadi; oncesi sag alt bos bolgede yapi yok"
+A002,2,0,0,0,"event6 kirsal; A2/B3 sol beyaz yapi ve C2 ust beyaz yapi etiketsiz olasi; olasi sinif hatasi 2 (yikik etiketli (745,425) ve (545,788) sonrasinda cati gorunuyor) kar/yatma nedeniyle belirsiz, sayilmadi"
+A003,4,0,0,0,"event7 yogun (293 etiketli), cok iyi etiketli; ceyrek bakisla ~4 etiketsiz: q1 ust sol kirmizi catili (~345,105 ceyrek px) ve beyaz yapi (~540,80), q3/q4 civari 2 kucuk; sonrasi oturuyor; sayim +-2 belirsiz"
+A004,4,0,0,1,"Antakya sanayi/acik alan; B1 ust (480,60), A2/B2 acik renkli yapi (~150,200), D2 kahverengi uzun bina (~940,430) etiketsiz; B1 buyuk beyaz bina sagl etiketli ama sonrasinda ciddi hasarli gorunuyor (1 sinif hatasi, olasi); sonrasi oturuyor"
+A005,3,0,1,0,"Antakya yogun; sonrasi goruntu cok artefaktli (renkli parazit), kontur genel olarak oturuyor ama degerlendirme guvenilirligi dusuk; sol kenarda ~3 etiketsiz bina; yikik etiketler enkazla tutarli"
+A006,2,0,2,0,blok etiketleri (32 bilesen ~80 bina: bitisik binalar birlesik); sonrasi asiri yatik/kar: kayma 2 (yatma kaynakli); A2 kirmizi catili bina etiketsiz
+A007,2,0,0,0,Antakya merkez; yogun; C2 koyu catili bina + 1 etiketsiz; sonrasi oturuyor
+A008,3,0,0,0,yogun; 3 etiketsiz bina (kucuk/ek yapi); sonrasi oturuyor
+A009,4,0,0,0,"kirsal tesis; B2/C2 pembe catili bina, C2 beyaz yapi, C1 sol kenar 2 kirmizi yapi, D4 kucuk yapi etiketsiz"
+A010,2,0,1,0,oncesi sol bos bolge macenta; 2 etiketsiz bina; hafif kayma
+A011,2,0,0,0,seyrek askeri/kirsal alan; A3 kirmizi catili bina + 1 yapi etiketsiz
+A012,4,0,0,0,kucuk kasaba; ~4 etiketsiz kucuk/acik catili bina; sonrasi oturuyor
+A013,3,0,0,0,kirsal/kasaba kenari; sol ust kucuk yapi + B4 civari 2 kucuk yapi etiketsiz; sonrasi oturuyor
+A014,1,0,2,0,sonrasi asiri yatik (cok yuksek off-nadir) kayma 2; oncesinde 1 etiketsiz bina (C3 kenar)
+A015,1,2,1,0,oncesi sol alt bos bolge macenta; kar ortulu sonrasi; D2 sag kenar 1 bina etiketsiz; kapsamdisi: bos bolgede yapi gorunmuyor (2 = sonrasinda gorunen belirsiz)
+A016,5,0,1,0,"Antakya yogun mahalle; ~5 etiketsiz kucuk bina (D1/D2/B4); sonrasi artefakt (beyaz leke) var; yikik etiketlerin bir kismi sonrasinda ayakta gorunuyor (A4 sag, C2 sag) ama sinif hatasi olarak sayilmadi (belirsiz)"
+A017,4,0,0,0,kasaba/hastane cevresi; ~4 etiketsiz kucuk yapi (A2/B1); kontur sonrasinda oturuyor; sayim yaklasik
+A018,3,0,0,0,sehir kenari otoyol; D1 sag ust blokta ~3 etiketsiz yapi olasi; kontur oturuyor; sayim yaklasik
+A019,2,0,1,0,"Antakya yogun; blok etiketler (91 bilesen); D3 sag ust ve A3 sol alt civari 2 etiketsiz bina olasi; sonrasi artefaktli, kayma hafif; sayim yaklasik"
+A020,1,0,0,0,"kentsel, blok/mahalle etiketli (81 bilesen); B2 civari 1 etiketsiz kucuk bina; sonrasi oturuyor; D3 sag yikik etiketli yapi enkazla tutarli; sayim yaklasik"
+A021,3,0,1,0,Antakya merkez yogun hasarli; sonrasi cok artefaktli/yatik; A1-B1 ust beyaz bina ve D2 civari 2 etiketsiz bina olasi; yikik etiketler enkazla genel tutarli; sayim yaklasik
+A022,1,0,0,0,"tepe/park kenari, az bina; A1 beyaz catili yapi (~135,265 tam sayfa px) etiketsiz; sonrasi oturuyor"
+A023,2,0,1,0,"Antakya yogun; neredeyse tum binalar etiketli; ~2 kucuk etiketsiz yapi olasi (sol B1/A2 civari); sonrasi yatik, kayma hafif-orta; sayim yaklasik"
+A024,2,30,1,0,"oncesi sol ~%45 BOS (macenta) bolge: sonrasinda orada ~25-35 bina gorunuyor ve etiketsiz (kapsamdisi, yaklasik); oncesi gecerli bolgede ~2 etiketsiz bina; sonrasi yatik"
+A025,4,50,1,0,"Antakya eski cekirdek cok yogun, bitisik blok etiketler (62+28+23 bilesen ~ gercek bina sayisindan az); oncesi sag alt ~%35 bos: sonrasinda orada ~40-60 bina etiketsiz (kapsamdisi, cok yaklasik); gecerli bolgede ~4 etiketsiz; sonrasi hafif kayma; sayim guvensiz +-3"
+A026,3,0,0,0,"sehir disi, sanayi/stadyum; A2 cevresi ve B3 civari 3 kucuk yapi etiketsiz olasi; sonrasi oturuyor; sayim yaklasik"
+A027,3,0,1,0,"Antakya merkez; cok iyi etiketli; A1/B1 ust orta 1-2 kucuk yapi, A2 sol 1 yapi etiketsiz olasi; sonrasi yatik (kayma hafif), yikik etiketler sonrasinda tutarli (B3 yikik: enkaz/bos arsa)"
+A028,2,0,1,0,"kentsel mahalle, 114 bilesen cok iyi etiketli; C2 ve B2 civari 2 etiketsiz yapi olasi; sonrasi hafif yatik/kayma"
+A029,3,0,0,0,kasaba kenari/olive tarlalari; D1 sag ust ve A1 sol orta 3 etiketsiz yapi (kucuk); sonrasi oturuyor
+A030,3,0,0,0,"kirsal olive bahcesi (30+3+8 bilesen); B2/D2 civari 3 etiketsiz kucuk yapi olasi; yikik etiketli kucuk yapilar sonrasinda belirsiz (kirsal, kucuk) ama tutarli gorunuyor; oturuyor"
+A031,1,0,1,0,"buyuk kamu kompleksi (60 bilesen) etiketli; sol ust A1 kucuk catili yapi ve C4 alt (600,1035) kucuk yapi etiketsiz belirsiz; sayim 1; sonrasi yatik, hafif kayma"
+A032,2,0,2,0,sonrasi asiri artefakt/yatik (renkli parazit); etiketler sonrasinda dogru yere oturmuyor (kayma 2); oncesinde B2 ve C3 civari 2 etiketsiz yapi olasi; sayim yaklasik
+A033,2,0,0,0,kasaba kenari; oncesi sag ~%20 bos ama orada yapi yok (tarla); B1 ust ve A3-B3 civari 2 etiketsiz yapi olasi; sonrasi oturuyor
+A034,1,0,1,0,"cok yogun blok etiketli (54 bilesen = cok sayida bina); kendi bakisimda tum bloklar etiketli, 1 kucuk yapi (A4 sol alt) belirsiz; sonrasi asiri yikanmis/buyuk yatik, kontur dagitik; payda cok dusuk bilesen sayisi: oran bu karoda anlamsiz"
+A035,1,0,1,0,"Antakya merkez, cok yikik etiketli (19) ve hasarli (15); oncesinde A2 sol kenar 1 etiketsiz yapi olasi; sonrasi asiri yatik/bulanik, yikik etiketler enkaz alanlariyla tutarli gorunuyor; sayim yaklasik"
+A036,2,0,1,0,"kasaba merkezi yogun; C3 (740,715) beyaz kucuk bina ve D2 (955,595) etiketsiz olasi; sonrasi hafif yatik/kayma; hasarli 1 etiket (D3) sonrasinda tutarli"
+A037,3,0,2,0,"kasaba yogun (114 bilesen); A2/B2 (170,540) kucuk catili yapi (kirmizi) ve C1-C2 civari 2 etiketsiz bina; sonrasi asiri artefakt/yatik, kontur oturmuyor (kayma 2); sayim yaklasik"
+A038,2,0,0,0,"sanayi/kanal; B3-D3 ve B4 alt civari 2 etiketsiz yapi (kucuk depo/hangar: C2 alt (700,920) post'ta yeni, pre'de yok); gecerli: A2 sol (265,295) etiketsiz gri kucuk yapi; sonrasi oturuyor"
+A039,3,0,2,0,"Antakya yogun (104+11+8); sonrasi asiri artefaktli/yatik, kontur oturmuyor (kayma 2); oncesinde A2 sol (60,490) ve B4 civari 3 kucuk/arka bina etiketsiz olasi; D3 kirmizi cati (1060,635) etiketsiz; yikik etiketlerin sonrasi enkaz alani ile tutarli; sayim yaklasik"
+A040,2,0,0,0,"kirsal dag yolu (16+3+3); A1 sol ust, D3-D4 sag alt civari 2 etiketsiz yapi olasi; sonrasi karli ama kontur oturuyor; kucuk yikik etiketler (A1 (110,110), D1 (1160,955)) sonrasinda kuruyor belirsiz"
+A041,2,0,1,0,"Antakya merkez yogun (90 bilesen buyuk bloklar); A3 sol alt (40,830) ve C3 sag (1000,740) 2 kucuk etiketsiz yapi olasi; sonrasi yatik, hafif/orta kayma; etiketler buyuk bloklari kapsiyor (bilesen = cok bina)"
+A042,3,0,0,0,"sehir kenari kampus/askeri alan ve alt mahalle (110 bilesen); B1-B4 arasi koyu catili 2 yapi (A4 sol alt kucuk, B4 (350,970)), D4 sag alt (960,1135) etiketsiz olasi; sonrasi oturuyor; yikik etiketli D4 sag alt kuyusunda gorunuyor"
+A043,3,0,1,0,"tarihi mahalle (120+5+1); A2 (460,470) ve A2/B2 (80,330) ile A3 sol alt kucuk catili 3 etiketsiz yapi; sonrasi oturuyor hafif kayma; sayim yaklasik"
+A044,1,0,1,0,"sanayi sitesi (39+5); D4/B4 civari 1-2 kucuk etiketsiz; sonrasi karli+yatik, kontur oturmuyor hafif; sayim yaklasik (belirsiz)"
+A045,3,0,1,0,"kasaba (92+3+1); A2 (900,540) ve C3 (700,610) civari 3 etiketsiz kucuk yapi olasi; sonrasi cok artefaktli, kontur genelde oturuyor; sayim yaklasik"
+A046,4,0,0,0,kasaba/yamac (115); oncesi sag alt buyuk bolge BOS (macenta) ve sonrasi da bos (siyah): bina gorunmuyor; gecerli bolgede B1-C2 civari ~4 etiketsiz kucuk yapi; sonrasi oturuyor; sayim yaklasik
+A047,3,0,0,0,"kasaba kenari (78+5); C3 (800,715) ve C3-D3 (850,715) kucuk yapilar, A3 (60,840) civari 1 yapi etiketsiz olasi; sonrasi oturuyor; sayim yaklasik"
+A048,0,0,0,0,"kirsal tarla; 7 etiketli yapi ve D2'de 4 yapi hepsi konturlu; B2 (500,410) cok kucuk baraka (<12px) sayilmadi; sonrasi oturuyor"
+A049,5,0,0,0,"Antakya sanayi kenari (42+5); A3/A4 sol (35-310,900) sirali 5 kucuk catili yapi etiketsiz; sonrasi oturuyor, A4 sol cadir alani"
+A050,3,0,0,0,"Antakya yogun blok etiketli (44 bilesen = onlarca bina); A4-C4 (500-740,1000-1050) 3 yuksek bina oncesinde catilari gorunuyor ve etiketsiz (inşaat/yeni?); bloklarda bitisik bina birlesik; sonrasi oturuyor"
+A051,2,0,0,0,"duzenli sehir mahallesi (80 bilesen); neredeyse tamami etiketli; alt kenar C4-D4 (550,1290) ve B1 (230,1290) kesik 2 bina etiketsiz; sonrasi karla kapli/pixelli, kontur oturuyor"
+A052,1,0,1,0,"kasaba kenari (57); C2 (545,640) kucuk beyaz yapi etiketsiz; sonrasi asiri artefakt/yatik, kontur kismen oturuyor; sayim yaklasik"
+A053,0,0,0,0,"kirsal tarla; tek etiketli ciftlik evi dogru; D3 (1050,885) cok kucuk gunes paneli/barinak (<20 px) sayilmadi; sonrasi oturuyor"
+A054,3,0,0,0,"sanayi/ticaret (101+24); B3 (270,730) ve (460,790) uzun hangar benzeri sıralar belirsiz sayilmadi; C3 (530,690) ve D4 civari 3 catili yapi etiketsiz olasi; sonrasi oturuyor; A1 (210,190) sonrasinda yeni buyuk beyaz bina (oncesinde yapi iskeleti) sayilmadi"
+A055,2,0,1,0,"kasaba yogun (128+2); A2 sol kenar (25,360) kirmizi cati kesik bina ve A3 sol (110,760) civari 1-2 yapi etiketsiz olasi; sonrasi cok artefaktli, kontur genel oturuyor; sayim yaklasik"
+A056,0,0,0,0,"yeni mahalle/insaat (42+4); pre'de B2-D1 insaat halindeki bloklar ve post'ta yeni binalar var (oncesinde yoksa sayilmadi); 4 yikik etiketli kucuk yapi sonrasinda enkaz/bos: B2 (850,550) bos arsa tutarli; sonrasi oturuyor"
+A057,2,0,1,0,"Antakya yogun kentsel (110); A3 (310,740) civari ve C2 (620,540) civari 2 etiketsiz kucuk yapi olasi; sonrasi yatik, kontur oturuyor hafif kayma; sayim yaklasik"
+A058,1,0,0,0,"Antakya tarihi carsi (22+15+4): kentsel bloklar, tek bloktan cok bina; D3 (1050,690) uzun beyaz cati ve C2 (560,350) gri cati bloklar icinde sayilmis; 1 etiketsiz bina (B1 (400,85) beyaz-gri yapi) olasi; yikik etiketli kirmizi (710,880) ve (490,1040): sonrasinda enkaz, tutarli; sonrasi oturuyor; bu karoda bileşen = cok bina, oran anlamsiz"
+A059,3,40,2,0,"Antakya kenar mahalle (71); oncesi sol ~%30 BOS (macenta): sonrasinda orada ~40 bina gorunuyor, etiketsiz (kapsamdisi, cok yaklasik); gecerli bolgede C3 (610,800) beyaz duz cati, C3 (700,690) mavi kucuk, B3 (390,860) civari 3 etiketsiz; sonrasi belirgin yatik/kayma (kontur sola/yukari kayik) kayma 2; sayim yaklasik"
+A060,2,0,1,0,"Antakya yogun blok etiketli (28 bilesen = yuzlerce bina): blok icindeki tum binalar etiketli sayildi; A2 sol (80,560) ve C4 (1030,1190) civari 2 etiketsiz yapi olasi; sonrasi hafif kayma; bu karoda bilesen = cok bina, oran anlamsiz"
+A061,4,0,1,0,"Antakya yogun mahalle (129+4); A3 (160,830) ve D4 (1095,955) kirmizi catili 2 kucuk ev etiketsiz; B1 (420,235) beyaz kucuk ve B1 (430,300) koyu kucuk etiketsiz olasi; sonrasi cok artefaktli, kontur genel oturuyor hafif kayma; sayim yaklasik"
+A062,2,0,1,0,"Antakya merkez (62+6+8); D3 (1180,420) ve A4 (30,1090) civari 2 etiketsiz yapi olasi; yikik etiketli D2 (910,320) buyuk bina sonrasinda enkaz tutarli; sonrasi yatik/artefaktli, hafif kayma; sayim yaklasik"
+A063,1,0,1,0,"Asi nehri kenari (22+0+3); neredeyse tum binalar etiketli; C1 (680,265) cok kucuk koyu cati belirsiz sayilmadi, A1 sol ust (140,255) etiketli kucuk yapi; 1 olasi etiketsiz: B3 (480,770) civari; yikik etiketli D1 (1070,235) ve D4 (1150,1190) sonrasinda enkaz tutarli; sonrasi yatik hafif kayma"
+A064,2,0,1,0,"kasaba/yamac (141 sagl); neredeyse tum binalar etiketli; C4 (765,935) kahverengi cati ve C3 (860,635) civari 2 etiketsiz yapi olasi; sonrasinda cadir alanlari var (A4 sag alt, D4 sol alt) sayilmadi; sonrasi kontur oturuyor hafif kayma; sayim yaklasik"
+A065,1,0,0,0,"Antakya sanayi/demiryolu (74+4); neredeyse tum binalar etiketli (depo/hangar sirasi dahil); B2 (270-720,350-540) demiryolu vagonlari sayilmadi; 1 olasi etiketsiz: C1-C2 (650,330) civari kucuk yapi belirsiz; sonrasinda B1/C1 (500,255) yeni buyuk beyaz hangar var (oncesinde yok) sayilmadi; sonrasi oturuyor"
+A066,1,15,0,1,"Antakya yerlesim (131+2+1); oncesi sol ust ~%12 bos (macenta), sonrasinda orada A2 (150,295) kirmizi catili yapi kismen etiketli, sag alt ek 1-2 yapi (kapsamdisi tahmin 15?) -> bos bolgede ~yok, 0-3; gecerli bolgede C2 (770,425) mavi ortu (bina degil) sayilmadi, D2/D3 (1000,520) kucuk yapi 1 etiketsiz olasi; D3 (955,605) yikik etiketli yapi hem oncesinde hem sonrasinda cati ayakta (olasi sinif hatasi 1); sonrasi oturuyor"
+A067,1,0,1,0,"Antakya/Defne ana cadde (38+13+1); tum belirgin binalar etiketli; 1 olasi etiketsiz: B1 (270,125) yesil havuz (bina degil) sayilmadi, D2 (1080,470) etiketli; sag alt D4 yogun mahalle hasarli etiketler tutarli; C1 (760,250) yikik etiketli yapi sonrasinda enkaz: tutarli; sonrasi yatik, kontur hafif kayik; sayim belirsiz (0-2)"
+A068,0,0,1,0,"yeni apartman bloklari (39 sagl): tum bloklar etiketli, ek yapi yok; sonrasi cok bulanik + kar + yuksek yatik, kontur binaya kismen oturuyor (kayma 1, belki 2); degerlendirme guvenilirligi dusuk"
+A069,2,0,0,0,"Antakya yerlesim (121 sagl, 0 hasarli); neredeyse tum binalar etiketli; B1 (340,125) beyaz kucuk yapi ve D4 (1100,1190) civari 1 kucuk yapi etiketsiz olasi; sonrasinda A2-B3 (200,500) arazi acilmis (oncesinde zeytinlik) bina degil; sonrasi oturuyor"
+A070,2,0,1,0,"Antakya merkez yogun apartmanlar (76+2 yikik); buyuk bloklar etiketli; D4 (1130,1110) civari ve A4 (50,1010) 2 kucuk yapi etiketsiz olasi; yikik etiketli B3 (400,650) ve A2 (20,470) sonrasinda belirsiz/enkaz-golge, tutarli kabul; sonrasi hafif kayma"
+A071,1,0,0,0,"kirsal tarla + mahalle kenari (31 sagl); mahalledeki tum binalar etiketli; A2 sol (20,500) kucuk yapi ve A3 (20,650) etiketli; 1 olasi etiketsiz: B2 sag kenar (490,470) kirmizi catili yapi kismen etiketli sayildi; C1-D1 sag ust gunes paneli etiketli; sonrasi oturuyor, kayma yok"
+A072,3,0,0,0,"kent mahallesi cok yogun (169 sagl); bitisik binalar etiket bloklarinda; sonrasinda B1 (415,110) ve (490,110) iki yeni beyaz catili bina (oncesinde yok) sayilmadi; ~3 olasi etiketsiz bina (C2 (660,610) cevresi, B3 (520,740), D2 (1150,320)); sonrasi oturuyor; sayim belirsiz +-2"
+A073,1,0,0,0,"Asi nehri kenari (20 sagl+5 hasarli+4 yikik); neredeyse tum binalar etiketli; C3 (690,705) ince gri yapi etiketsiz olasi (1); yikik etiketler (A1 buyuk bina, A3 iki bina) sonrasinda enkaz/hasarli, tutarli; sonrasi cok hafif kayma/oturuyor"
+A074,3,0,1,0,"kirsal yeni yerlesim (56 sagl+1 yikik); A4 (165,1180) mavi panelli buyuk bina, D3 (1085,770) ve C2-C3 (725,640) duvarli temel/yapi etiketsiz (son ikisi insaat halinde, belirsiz); sonrasi etiketler hafif asagi-sag kayik ~10 px; sayim yaklasik"
+A075,2,0,0,0,"kirsal/kasaba kenari (42 sagl); B3 (535,830) cadir/depo benzeri yapi ve D4 (1170,1130) kucuk yapi etiketsiz olasi (belirsiz); sonrasinda D2-D3 (900,660) yeni buyuk bina (oncesinde yok) sayilmadi; sonrasi oturuyor"
+A076,0,0,0,0,"kirsal tarla/orman (6 sagl, kenarda); B2 (540,515) <12 px cok kucuk yapi sayilmadi; etiketli binalar dogru; sonrasi oturuyor"
+A077,2,0,1,0,"kasaba merkezi (80 sagl), oncesi ustte ince bos serit; C1-D1 (840,320) ve (870,330) iki kucuk beyaz yapi etiketsiz olasi; sonrasi tamamen kar ortulu, kontur oturuyor gibi (kar nedeniyle degerlendirme zayif) kayma 1"
+A078,0,0,2,1,"Antakya yuksek bloklar (28 sagl+21 yikik, cok yikik-agirlikli); oncesi sol %20 bos; tum kuleler etiketli; sonrasi kontur kulelerin tabanina gore ~60-100 px sola/asagi kayik (kule yatmasi) kayma 2; D3 (1130,740) ince kirmizi/sari sliver etiket (hasar etiketi yan duvara cizilmis, binayi kapsamiyor) sinif/geometri hatasi 1; yikik etiketli C3-D3 (850,800) ve D4 (1010,1190) enkazla tutarli"
+A079,0,0,0,0,"orman/yol; sol kenar 1 etiketli; post'ta yeni kirmizi cati (B4) pre'de yok, sayilmadi"
+A080,1,0,1,0,yaklasik; D3 ince beyaz sera/baraka sayilmadi; post bulanik
+A081,1,8,2,0,yaklasik; sol seritte pre bos (kapsam disi) post'ta bina gorunuyor ~8; post egik A3-A4 kayma buyuk
+A082,2,0,1,0,yaklasik +-2; cok yogun blok
+A083,2,0,1,0,yaklasik +-2; B3 mavi cati bina konturlu degil
+A084,1,0,2,0,"yaklasik; post karli+egik, kontur 20-40px kaymis; pre iyi etiketli"
+A085,3,0,1,0,"yaklasik +-2; cok yogun, neredeyse tamami etiketli"
+A086,2,0,0,0,"yaklasik; A2 (100,470) kucuk beyaz cati pre'de konturlu degil"
+A087,2,0,2,0,"yaklasik +-2; B1/B2 (380,260) koyu catili bina konturlu degil; post egik, kontur kaymasi 30-40px"
+A088,1,0,0,0,"yaklasik; kirsal; post D4 sag alt yeni bina pre'de yok, sayilmadi"
+A089,3,0,1,0,"yaklasik +-2; iyi etiketli, yuksek binalarda post egim"
+A090,0,0,0,0,"tarla; tek etiketli bina (D4 alt), kayma yok"
+A091,1,0,0,1,"C3 buyuk fabrika catisi post'ta belirgin cokmus/deforme ama saglam etiketli (sinif hatasi, hafif tartismali)"
+A092,1,0,1,0,"yaklasik; iyi etiketli, post hafif egim"
+A093,0,0,1,0,"kirsal; D3 (910,590) acik baraka sayilmadi; pre'de dikey mozaik dikis artefakti; C3 kule gölgesi kayma"
+A094,2,0,2,0,"yaklasik +-2; post karli+cok egik+bulanik, kontur kaymasi 40-60px; sinif dogrulanamaz"
+A095,0,0,0,0,"kirsal; D1 tek etiketli yapi; post'ta D1 (1100,120) yaninda ek yapi gorunuyor ama pre'de yok/belirsiz, sayilmadi"
+A096,2,0,1,0,"yaklasik; D1 sag (1115,255) ve komşu kucuk yapi konturlu degil"
