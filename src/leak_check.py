@@ -10,8 +10,12 @@ Yöntem: her karonun ÖNCESİ görüntüsünden (boş/siyah bölge dışında) S
 ÖN-KAYIT (28 Ekim 2026, hiçbir çift skorlanmadan ÖNCE yazıldı; sonuca bakıp değiştirilmez):
   - Eşleşen karo çifti  : inlier >= 30  VE  inlier / iyi_eşleşme >= 0.30   (MATCH_INLIERS, MATCH_RATIO)
   - Event çifti "ÖRTÜŞÜYOR" : >= 3 eşleşen karo çifti;  1-2 çift "ŞÜPHELİ" (elle bakılır, yan yana görsel üretilir);  0 = "TEMİZ"
-  - Kontrol: aynı karonun öncesi-sonrası eşleşmesi (pozitif; yöntem çalışıyor mu) ve karonun kırpılıp ölçeklenmiş kopyası (pozitif).
-    Pozitif kontrollerde eşleşme oranı < %80 ise yöntem yetersiz sayılır ve sonuç "KONTROLSÜZ" yazılır.
+  - Kontrol: karonun kırpılıp ölçeklenmiş/döndürülmüş kopyası ile eşleşmesi (BAŞARI KAPISI: >= %80, yoksa sonuç "KONTROLSÜZ").
+    Aynı karonun öncesi-sonrası eşleşmesi yalnız BİLGİ için raporlanır, kapı değildir.
+    DEĞİŞİKLİK (28 Ekim 2026, deneme koşusundan sonra, hiçbir gerçek karo çifti sonucu yorumlanmadan): ilk yazımda iki kontrol
+    birlikte kapıydı (ortalama %55 çıktı: kırpma %95, öncesi-sonrası %12; yalnız event 7 öncesi-sonrası geçti). Öncesi-sonrası
+    farkı yöntem zayıflığı değil görüntü farkı (sonrası eğik çekim 29-44 derece, farklı tarih/kar/hasar); öncesi↔öncesi örtüşme
+    sorusu için adil kontrol aynı görüntünün kırpık kopyasıdır. Sınırlılık: farklı bakış açılı örtüşmeler yakalanamaz.
   - Karar: örtüşen event bilinen şehirle aynı tarafa konur (bkz. src/make_splits.py, leak_overrides_v1.csv).
 Çıktılar (out/): eslesen_ciftler.csv, event_matrisi.csv, kontrol.csv, ozet.txt, gorseller/*.jpg
 """
@@ -21,6 +25,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pandas as pd
+
+cv2.setNumThreads(1)   # fork + OpenCV iş parçacığı havuzu macOS'ta takılmaya (deadlock) yol açabilir; süreç başı tek iş parçacığı
 
 MATCH_INLIERS = 30
 MATCH_RATIO = 0.30
@@ -106,7 +112,8 @@ def verdict(n):
 def controls(root, tiles, rng, n=40):
     rows = []
     pick = rng.choice(len(tiles), size=min(n, len(tiles)), replace=False)
-    for k in pick:
+    for n_, k in enumerate(pick, 1):
+        if n_ % 10 == 0: print(f"  kontrol {n_}/{len(pick)}", flush=True)
         r = tiles.iloc[k]
         pre_p, post_p = img_paths(root, r.split, int(r.event), r.tile)
         pre = cv2.imread(str(pre_p)); post = cv2.imread(str(post_p))
@@ -157,10 +164,15 @@ def main(argv=None):
     out = Path(a.out); (out / "gorseller").mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(42)
 
+    t0 = time.time()
+    print(f"kontrol testleri başlıyor ({len(tiles)} karo)...", flush=True)
     ctrl = controls(root, tiles, rng)
+    print(f"kontrol bitti {time.time() - t0:.0f} sn", flush=True)
     ctrl.to_csv(out / "kontrol.csv", index=False)
-    pos_ok = float(ctrl[["pre_post_ok", "crop_ok"]].values.mean()) if len(ctrl) else 0.0
-    print(f"pozitif kontrol başarı oranı: {pos_ok:.2f} (en az {POS_CONTROL_MIN} gerekir)")
+    pos_ok = float(ctrl["crop_ok"].mean()) if len(ctrl) else 0.0
+    pp_ok = float(ctrl["pre_post_ok"].mean()) if len(ctrl) else 0.0
+    print(f"pozitif kontrol (kırpık kopya, KAPI) başarı oranı: {pos_ok:.2f} (en az {POS_CONTROL_MIN} gerekir)")
+    print(f"bilgi: öncesi-sonrası aynı karo eşleşme oranı: {pp_ok:.2f} (kapı değil; sonrası eğik çekim farkı)")
 
     ev = tiles.event.astype(int).tolist()
     summary = []
@@ -168,6 +180,7 @@ def main(argv=None):
         print(f"[{kind}] özellik çıkarılıyor ({len(tiles)} karo)...", flush=True)
         _D.clear()
         for i, r in tiles.iterrows():
+            if i % 100 == 0: print(f"  özellik {i}/{len(tiles)}", flush=True)
             f = feats(img_paths(root, r.split, int(r.event), r.tile)[idx])
             _D[i] = f if f is not None else (np.zeros((0, 2), np.float32), np.zeros((0, 128), np.float32))
         pairs, res = run_pairs(list(range(len(tiles))), ev, a.workers)
@@ -194,7 +207,7 @@ def main(argv=None):
     S = pd.DataFrame(summary)
     S.to_csv(out / "event_matrisi.csv", index=False)
     with open(out / "ozet.txt", "w") as f:
-        f.write(f"pozitif kontrol: {pos_ok:.2f}\n{S.to_string(index=False)}\n")
+        f.write(f"pozitif kontrol (kirpik kopya): {pos_ok:.2f}  bilgi, oncesi-sonrasi: {pp_ok:.2f}\n{S.to_string(index=False)}\n")
     print(S.to_string(index=False))
     return 0
 

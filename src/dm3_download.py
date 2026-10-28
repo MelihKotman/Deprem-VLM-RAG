@@ -79,8 +79,11 @@ def dry_run():
     return bench, members
 
 
-def download(out, limit=None, workers=8):
+def download(out, limit=None, workers=8, no_sar=False):
     bench, members = list_remote()
+    if no_sar:  # SAR (sar_post) dosyalarını atla: disk tasarrufu; öncesi/sonrası optik + maske yeter
+        bench = [b for b in bench if "sar_post" not in b[0]]
+        members = {z: [m for m in ms if "sar_post" not in m] for z, ms in members.items()}
     os.makedirs(out, exist_ok=True)
     log_p = os.path.join(out, "_indir.log")
     lk, done, fail = threading.Lock(), [0], []
@@ -158,7 +161,8 @@ if __name__ == "__main__":
     ap.add_argument("--out", default="/kaggle/working/dm3_turkiye")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--no-sar", action="store_true", help="SAR dosyalarını indirme (disk tasarrufu)")
     a = ap.parse_args()
     if a.dry_run:
         dry_run(); sys.exit(0)
-    sys.exit(download(a.out, a.limit))
+    sys.exit(download(a.out, a.limit, no_sar=a.no_sar))

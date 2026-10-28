@@ -25,9 +25,14 @@ data:
   usable_tiles_expected: 1030   # status == ok; Adım 5 doğrulaması
   kaggle_dataset: melihkotman/disasterm3-turkiye   # özel (PUBLIC değil; CC BY-NC-SA 4.0); Kaggle'da /kaggle/input/datasets/melihkotman/disasterm3-turkiye/dm3_turkiye/{bench,train}
 
-split:                      # Adım 7'de dondurulur (v1); o zamana kadar null
-  S1: null                  # data_manifest/split_S1_v1.csv (ana: eğitim Adıyaman+Malatya+Osmaniye, test Antakya+e6+e7)
-  S2: null                  # data_manifest/split_S2_v1.csv (dayanıklılık)
+split:                      # Adım 7'de donduruldu (28 Ekim 2026); değişiklik = yeni sürüm (v2) + neden
+  version: v1
+  S1: data_manifest/splits/split_S1_v1.csv   # ana: eğitim Adıyaman+Malatya+Osmaniye, test Antakya+e6+e7, kontrol Gaziantep
+  S2: data_manifest/splits/split_S2_v1.csv   # dayanıklılık: eğitim Adıyaman+Malatya+Antakya+e6, test Osmaniye+e7, kontrol Gaziantep
+  S1_sha1: 28e3fee845        # make_splits.py çıktısı; `python -m src.make_splits --check` birebir doğrular
+  S2_sha1: 60254698f7
+  validity: data_manifest/splits/tile_validity_v1.csv   # değerlendirme geçerlilik maskesi özeti (src/tile_validity.py)
+  leak_check: data_manifest/leak_check/                 # sızıntı kontrolü çıktıları (src/leak_check.py)
   unit: event               # olay düzeyinde bölme
   audit_threshold_visible_unlabeled: 0.10   # bakmadan önce yazıldı (28 Ekim 2026), notlar/bolme-esik-karari.md
 
