@@ -23,7 +23,7 @@ data:
   manifest: data_manifest/disasterm3_turkiye/manifest.csv
   region_summary: data_manifest/disasterm3_turkiye/bolge_ozet.csv
   usable_tiles_expected: 1030   # status == ok; Adım 5 doğrulaması
-  kaggle_dataset: null          # Adım 5: özel dataset adı (PUBLIC değil; CC BY-NC-SA 4.0)
+  kaggle_dataset: melihkotman/disasterm3-turkiye   # özel (PUBLIC değil; CC BY-NC-SA 4.0); Kaggle'da /kaggle/input/datasets/melihkotman/disasterm3-turkiye/dm3_turkiye/{bench,train}
 
 split:                      # Adım 7'de dondurulur (v1); o zamana kadar null
   S1: null                  # data_manifest/split_S1_v1.csv (ana: eğitim Adıyaman+Malatya+Osmaniye, test Antakya+e6+e7)

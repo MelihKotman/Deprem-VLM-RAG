@@ -39,4 +39,4 @@ API anahtarları yalnız Kaggle Secrets'ta (`EVREN_API_KEY`, `GEMINI_API_KEY`, `
 - Lisans: DisasterM3 CC BY-NC-SA 4.0, Maxar/BRIGHT CC BY-NC; repo ve Kaggle dataset'i PUBLIC yapılmaz.
 
 ## Durum
-Yol haritası: Adım 3 (repo iskeleti) tamam. Sonraki: Adım 4 (hesaplar/anahtarlar), Adım 5 (veriyi Kaggle'a taşı).
+Yol haritası: Adım 3–5 tamam (repo, hesaplar/anahtarlar, veri Kaggle'da: özel dataset `melihkotman/disasterm3-turkiye`). Sonraki: Adım 6 (tabakalı ~96 karo denetimi).
