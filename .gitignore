@@ -1,0 +1,30 @@
+# --- Gizli bilgiler (asla repoya girmez) ---
+.env
+*.key
+secrets*
+kaggle.json
+# --- Büyük / lisanslı veri (Kaggle özel dataset'inde durur) ---
+data/
+Veri/
+*.tif
+*.tiff
+*.zip
+*.tar*
+*.npz
+*.parquet
+# --- Makale PDF'leri repo dışında tutulur (telif; makale yazımında ayrı klasörden kullanılır) ---
+*.pdf
+Makaleler/
+# --- Model ağırlıkları ---
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+# --- Çalışma artıkları ---
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+scratch*/

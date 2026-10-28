@@ -1,0 +1,52 @@
+# Tek yapılandırma dosyası. Her koşu bu dosyayı (ve komut satırı override'larını) okur.
+# Değişiklik = git commit. Koşu çıktıları kullandığı config'in özetini (hash) kaydeder.
+project:
+  name: deprem-vlm-rag
+  version: 0.1.0
+  created: 2026-10-28
+
+seed: 42                    # varsayılan; çok-tohumlu koşularda seeds listesi kullanılır
+seeds: [42, 43, 44]         # Adım 8/13: seed >= 3 (kota yetmezse tek seed + sınırlılık)
+
+paths:                      # proje köküne göre; kök RAG_ROOT ortam değişkeniyle ezilebilir
+  data_manifest: data_manifest
+  notebooks: notebooks
+  kb: kb
+  runs: runs
+  reports: reports
+  # Büyük veri repoda değil: Kaggle'da /kaggle/input/<dataset>, yerelde RAG_DATA ortam değişkeni.
+  data_root_env: RAG_DATA
+
+data:
+  main: disasterm3_turkiye  # ana veri (Adım 5'te Kaggle dataset adı buraya)
+  backup: bright_maxar      # yedek hat -> archive/bright_maxar_yedek/
+  manifest: data_manifest/disasterm3_turkiye/manifest.csv
+  region_summary: data_manifest/disasterm3_turkiye/bolge_ozet.csv
+  usable_tiles_expected: 1030   # status == ok; Adım 5 doğrulaması
+  kaggle_dataset: null          # Adım 5: özel dataset adı (PUBLIC değil; CC BY-NC-SA 4.0)
+
+split:                      # Adım 7'de dondurulur (v1); o zamana kadar null
+  S1: null                  # data_manifest/split_S1_v1.csv (ana: eğitim Adıyaman+Malatya+Osmaniye, test Antakya+e6+e7)
+  S2: null                  # data_manifest/split_S2_v1.csv (dayanıklılık)
+  unit: event               # olay düzeyinde bölme
+  audit_threshold_visible_unlabeled: 0.10   # bakmadan önce yazıldı (28 Ekim 2026), notlar/bolme-esik-karari.md
+
+models:                     # Adım 8 ve 12'de doldurulur: ad + sürüm + tarih zorunlu
+  visual:    {name: null, version: null}
+  vlm_open:  {api: evren, api_name: null, version: null, temperature: 0}   # `auto` YASAK
+  llm_open:  {api: evren, api_name: null, version: null, temperature: 0}
+  closed:    {api: gemini, api_name: null, version: null, temperature: 0}
+  judges:    []             # en az 2, farklı model ailelerinden
+  embedding: {api: evren, api_name: qwen3-embedding-8b}
+  rerank:    {api: evren, api_name: qwen3-reranker-8b}
+
+archive_policy:             # her API çağrısında
+  save_raw_output: true
+  record: [api_name, evren.routed_model, date_utc, latency_s, tokens]
+
+kb:
+  version: null             # Adım 10: kb_v1.0
+  language: tr
+  report_language: en
+
+public_data_only: true      # EVREN'e yalnız kamuya açık veri gönderilir
