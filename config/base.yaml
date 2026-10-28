@@ -55,3 +55,14 @@ kb:
   report_language: en
 
 public_data_only: true      # EVREN'e yalnız kamuya açık veri gönderilir
+
+evaluation:                 # Adım 7-8, sonuçlardan ÖNCE yazıldı (28 Ekim 2026); ayrıntı docs/adim8_tetikleyici.md
+  shift_tiers_px: {T0: [0, 5], T1: [5, 15], T2: [15, 30], T3: [30, null]}   # TX = tahmin yok
+  tolerance_px: 15          # toleranslı bina düzeyi; duyarlılık: 5
+  fallback_trigger:
+    metric: damage_f1       # (hasarlı F1 + yıkık F1) / 2, bina bileşeni düzeyi, geçerlilik maskeli
+    ratio: strict_over_tolerant
+    fold: osmaniye_holdout  # S1 eğitim şehirleri, Osmaniye dışarıda; test seti kullanılmaz
+    seed: 42
+    tile_primary_below: 0.70    # r < 0.70 -> karo düzeyi eş-ana
+    grey_zone_below: 0.85       # 0.70-0.85 ara bölge; >= 0.85 yalnız bina düzeyi ana
