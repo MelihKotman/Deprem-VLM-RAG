@@ -23,14 +23,17 @@ NC = 4          # 0 arka plan + 3 hasar sınıfı
 TOLS = (0, 5, 15)   # 0 = katı
 
 
-def object_vote(loc_prob: np.ndarray, dam_prob: np.ndarray, thr: float = 0.5) -> np.ndarray:
-    """loc_prob [H,W] (sigmoid), dam_prob [4,H,W] (softmax) → pred hasar haritası uint8 (0..3)."""
+def object_vote(loc_prob: np.ndarray, dam_prob: np.ndarray, thr: float = 0.5, weights=None) -> np.ndarray:
+    """loc_prob [H,W] (sigmoid), dam_prob [4,H,W] (softmax) → pred hasar haritası uint8 (0..3).
+    weights: sınıf 1..3 için çarpan (None = ağırlıksız). Eğitim kümesi bina sayılarından türetilir (vote_weights), test görülmeden."""
     loc = (loc_prob > thr).astype(np.uint8)
     n, lab = cv2.connectedComponents(loc, connectivity=8)
     if n <= 1:
         return np.zeros(loc.shape, np.uint8)
     flat = lab.ravel()
     sums = np.stack([np.bincount(flat, weights=dam_prob[c].ravel(), minlength=n) for c in (1, 2, 3)], 1)  # [n,3]
+    if weights is not None:
+        sums = sums * np.asarray(weights, np.float64)[None, :]
     cls = (sums.argmax(1) + 1).astype(np.uint8)
     cls[0] = 0
     return cls[lab]
@@ -185,3 +188,13 @@ def zone(r):
     if r is None:
         return "tanimsiz"
     return "karo_es_ana" if r < 0.70 else ("ara_bolge" if r < 0.85 else "yalniz_bina")
+
+
+def vote_weights(n_by_class, mode):
+    """Eğitim kümesi bina sayılarından (sağlam, hasarlı, yıkık) oylama ağırlığı; sağlam = 1.
+    none → None; inv → N_sağlam/N_c; sqrt_inv → sqrt(N_sağlam/N_c). Sınıf önsel düzeltmesi (ChangeOS'un sabit 8/38/25/11'inin veriye bağlı karşılığı)."""
+    if mode == "none":
+        return None
+    n = np.maximum(np.asarray(n_by_class, np.float64), 1.0)
+    w = n[0] / n
+    return tuple((np.sqrt(w) if mode == "sqrt_inv" else w).tolist())

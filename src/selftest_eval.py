@@ -83,6 +83,15 @@ def main():
     assert rr is not None and 0 <= rr <= 1.0 and zone(0.6) == "karo_es_ana" and zone(0.8) == "ara_bolge" and zone(0.9) == "yalniz_bina"
     assert trigger_r({"strict": {"damage_f1": 0.0}, "tol15": {"damage_f1": 0.0}}) is None
     print("7 tetikleyici r = %.2f (%s) OK" % (rr, zone(rr)))
+    # 8. oylama ağırlığı: ağırlıksızda sağlam kazanan bileşen, ağırlıkla yıkığa döner
+    from src.dm3_eval import vote_weights
+    loc = np.zeros((32, 32), np.float32); loc[4:20, 4:20] = 0.9
+    dam = np.zeros((4, 32, 32), np.float32); dam[1] = 0.6; dam[3] = 0.3
+    assert (object_vote(loc, dam)[4:20, 4:20] == 1).all()
+    w = vote_weights([3000, 100, 100], "inv")
+    assert w == (1.0, 30.0, 30.0) and (object_vote(loc, dam, weights=w)[4:20, 4:20] == 3).all()
+    assert vote_weights([3000, 100, 100], "none") is None and abs(vote_weights([3000, 100, 100], "sqrt_inv")[1] - 30 ** 0.5) < 1e-9
+    print("8 oylama ağırlığı OK")
     print("TÜMÜ GEÇTİ")
 
 

@@ -35,7 +35,7 @@ from torch.utils.data import DataLoader
 
 from src.config import load
 from src.dm3_dataset import (EvalTiles, TrainTiles, collate_eval, collate_train, load_split, select_tiles)
-from src.dm3_eval import Acc, object_vote, trigger_r, zone
+from src.dm3_eval import Acc, object_vote, trigger_r, vote_weights, zone
 from src.dm3_verify import find_root
 
 
@@ -68,7 +68,7 @@ def loss_fn(loc_logit, dam_logit, dam_t, cls_w):
 
 # ---------------------------------------------------------------- değerlendirme
 @torch.no_grad()
-def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None):
+def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None, vote_w=None):
     model.eval()
     acc = Acc()
     t0 = time.time(); n = 0
@@ -79,7 +79,7 @@ def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None):
         loc = ll.float().sigmoid().squeeze(1).cpu().numpy()
         dam = dl.float().softmax(1).cpu().numpy()
         for i, m in enumerate(meta):
-            pred = object_vote(loc[i], dam[i])
+            pred = object_vote(loc[i], dam[i], weights=vote_w)
             g = gt[i].numpy(); v = valid[i].numpy()
             keys = [("ALL",), ("group", m["group"]), ("tier", m["tier"]), ("group_tier", m["group"], m["tier"])]
             acc.update(keys, g, pred, v, m)
@@ -98,6 +98,9 @@ def report(s):
         r = a[lvl]
         print(f"  {lvl:6s} F1 sağlam {r['f1_intact']:.3f} hasarlı {r['f1_damaged']:.3f} yıkık {r['f1_destroyed']:.3f} "
               f"| macro {r['macro_f1']:.3f} | hasar-F1 {r['damage_f1']:.3f} | bileşen {r['n_gt_components']}")
+    for lvl in ("strict", "tol15"):
+        r = a[lvl]
+        print(f"  {lvl} karışım (satır gerçek sağlam/hasarlı/yıkık; sütun tahmin yok/sağlam/hasarlı/yıkık): {r['confusion_true_x_pred0123']}  yanlış alarm {r['n_false_alarm']}")
     p = a["pixel"]
     print(f"  piksel IoU sağlam {p['iou_intact']:.3f} hasarlı {p['iou_damaged']:.3f} yıkık {p['iou_destroyed']:.3f} | konum IoU {p['loc_iou']:.3f}")
 
@@ -123,6 +126,9 @@ def main(argv=None):
     ap.add_argument("--dam-p", type=float, default=0.5, help="kırpımın hasarlı/yıkık piksel çevresinden seçilme oranı")
     ap.add_argument("--cls-weights", default=None, help="CE sınıf ağırlıkları 'arka,sağlam,hasarlı,yıkık' örn. 1,1,3,3")
     ap.add_argument("--no-photo", action="store_true")
+    ap.add_argument("--vote", choices=["none", "sqrt_inv", "inv"], default="none", help="nesne oylamasında sınıf önsel düzeltmesi (eğitim bina sayılarından)")
+    ap.add_argument("--eval-in-sample", action="store_true", help="TANI: eğitim karolarından örnek üzerinde değerlendir (modelin eğitimde hasarı öğrenip öğrenmediği)")
+    ap.add_argument("--no-cudnn-benchmark", action="store_true", help="Aşama 0'da 1. epoch tepe bellek 15,06 GB (benchmark çalışma alanı) görüldü; OOM olursa aç")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--cache-dir", default=None, help="karo önbelleği (Kaggle: /kaggle/working/cache)")
@@ -142,7 +148,7 @@ def main(argv=None):
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     fp16 = dev == "cuda"
     random.seed(a.seed); np.random.seed(a.seed); torch.manual_seed(a.seed); torch.cuda.manual_seed_all(a.seed)
-    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.benchmark = not a.no_cudnn_benchmark
 
     root = find_root(a.root)
     if root is None or not Path(root).exists():
@@ -151,9 +157,13 @@ def main(argv=None):
     tr_df, ev_df = select_tiles(df, holdout=a.holdout, trigger_fold=a.trigger_fold,
                                 eval_role=a.eval_role, allow_test=a.allow_test)
     full_train_n = len(tr_df)
+    n_cls = [int(tr_df[c].sum()) for c in ("n_intact", "n_damaged", "n_destroyed")]   # eğitim bina sayıları (örneklemeden önce)
+    vote_w = vote_weights(n_cls, a.vote)
     sanity = False
     if a.pilot and len(tr_df) > a.pilot_tiles:
         tr_df = tr_df.sample(n=a.pilot_tiles, random_state=a.seed).reset_index(drop=True)
+    if a.eval_in_sample:
+        ev_df = tr_df.sample(n=min(40, len(tr_df)), random_state=a.seed).reset_index(drop=True); sanity = True
     if ev_df is None:                                   # değerlendirme kümesi verilmedi → eğitim içi SANITY (genelleme değil)
         ev_df = tr_df.sample(n=min(24, len(tr_df)), random_state=a.seed).reset_index(drop=True)
         sanity = True
@@ -164,7 +174,7 @@ def main(argv=None):
 
     info = dict(args=vars(a), config_sha1=cfg["_config_sha1"], split_file=cfg["split"][a.scenario],
                 split_sha1_config=cfg["split"].get(f"{a.scenario}_sha1"), n_train=len(tr_df), n_train_full=full_train_n,
-                n_eval=len(ev_df), eval_is_sanity_in_sample=sanity,
+                n_eval=len(ev_df), eval_is_sanity_in_sample=sanity, train_building_counts=n_cls, vote_weights=vote_w,
                 train_groups=sorted(set(tr_df.group)), eval_groups=sorted(set(ev_df.group)),
                 python=platform.python_version(), torch=torch.__version__, device=dev,
                 gpu=torch.cuda.get_device_name(0) if dev == "cuda" else None, data_root=str(root))
@@ -179,7 +189,7 @@ def main(argv=None):
     if a.eval_only:
         sd = torch.load(a.ckpt, map_location=dev)
         model.load_state_dict(sd["model"] if "model" in sd else sd)
-        acc, s, sec = evaluate(model, ev_dl, dev, fp16)
+        acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w)
         _save_metrics(out, acc, s, sec, a, info)
         return 0
 
@@ -252,10 +262,10 @@ def main(argv=None):
             return 3
     torch.save(model.state_dict(), out / "model_final.pt")
 
-    acc, s, sec = evaluate(model, ev_dl, dev, fp16)
-    mean_ep = float(np.mean(epoch_times)) if epoch_times else None
+    acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w)
+    mean_ep = float(np.mean(epoch_times[1:])) if len(epoch_times) > 1 else (float(epoch_times[0]) if epoch_times else None)   # 1. epoch (önbellek/benchmark ısınması) hariç
     last = json.loads((out / "log.jsonl").read_text().strip().splitlines()[-1])
-    timing = dict(epochs_run=len(epoch_times), mean_epoch_s=mean_ep, steps_per_epoch=steps_per_epoch,
+    timing = dict(epochs_run=len(epoch_times), mean_epoch_s=mean_ep, first_epoch_s=epoch_times[0] if epoch_times else None, steps_per_epoch=steps_per_epoch,
                   data_wait_frac=round(last["data_wait_s"] / last["sec"], 3), eval_s=round(sec, 1), eval_tiles=len(ev_df),
                   eval_s_per_tile=round(sec / max(len(ev_df), 1), 2), peak_mem_GB=last["peak_mem_GB"],
                   train_tiles=len(tr_df), train_tiles_full=full_train_n)
@@ -264,7 +274,7 @@ def main(argv=None):
         ep_full = mean_ep * scale
         timing["EXTRAPOLATION_NOT_MEASURED_AT_FULL_SIZE"] = dict(
             epoch_s_full=round(ep_full), hours_per_50_epochs=round(ep_full * 50 / 3600, 2),
-            note="pilot epoch süresi × (tam eğitim karosu / pilot karosu); değerlendirme ve kayıt süresi dahil değil")
+            note="sabit-durum epoch süresi (1. epoch hariç) × (tam eğitim karosu / pilot karosu); değerlendirme ve kayıt süresi dahil değil")
     (out / "timing.json").write_text(json.dumps(timing, ensure_ascii=False, indent=1))
     print("timing:", json.dumps(timing, ensure_ascii=False))
     _save_metrics(out, acc, s, sec, a, info)
