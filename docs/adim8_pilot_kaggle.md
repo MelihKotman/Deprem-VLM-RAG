@@ -61,3 +61,19 @@ Kuralın mekanik sonucu: öteleme 0 (0,082 − 0,060 = 0,022 > 0,02; ayrıca en 
 2. Seçilen oylamayla `p1_shift16` ve `p1_shift32` yeniden DEĞERLENDİRİLİR (eval-only) ve §3'teki öteleme kuralı uygulanır. Aşama 1 yeniden eğitilmez.
 3. Eğitim-içi hasar-F1 (katı) < 0,30 ise model eğitimde de hasarı öğrenemiyor → Aşama 2 (`dam-p 0` / ağırlık) beklemeden yürür, epoch 20'ye çıkar; ≥ 0,30 ama Malatya düşükse sorun genelleme/kayma → Aşama 2 durur, girdi kayma düzeltmesi (manifest `dx_post/dy_post` ile ön hizalama; seçenek (c)) Melih'le tartışılır — bu, 28 Ekim'de seçilen (b)'yi değiştirir, onay gerekir. (0,30 eşiği benim önerim, onay bekliyor.)
 4. Tanıdan sonra bile katı hasar-F1 < 0,15 kalırsa pilot "ölçüt ayırt edici değil" diye kapatılır, ayar seçimi yapılmaz; varsayılanlarla (öteleme 0, `dam-p 0,5`, r50) tam eğitime geçilip sınırlılık yazılır.
+
+## 7. Aşama 1b sonuçları, kuralların uygulanması ve Aşama 2 ön-kaydı (29 Ekim 2026; Aşama 2 sonuçları görülmeden)
+**Tanı çıktıları (Malatya katlaması, `p1_shift0` YENİDEN eğitildi: 12 epoch, aynı ayarlar; eski koşunun dosyaları oturum kapanınca kayboldu).**
+| oylama | tol15 hasar-F1 | katı macro-F1 | yıkık F1 | hasarlı F1 |
+|---|---|---|---|---|
+| none | 0,013 | 0,290 | 0,026 | 0,000 |
+| sqrt_inv | 0,094 | 0,344 | 0,189 | 0,000 |
+| inv | 0,084 | 0,331 | 0,127 | 0,041 |
+Eğitim-içi (40 eğitim karosu, oylama none): katı hasar-F1 0,280 (hasarlı 0,194, yıkık 0,367). Malatya referansı: 8.376 sağlam, **105 hasarlı, 76 yıkık** bina bileşeni → hasar-F1 ~180 bina üzerinden. Katı = tol5 = tol15 hasar-F1 (tahmin edilen hasar neredeyse yok, tolerans bir şey değiştirmiyor); T1 3 karo, T2 66, T3 85 (kademe kırılımı bilgi).
+**Gürültü bulgusu (önemli):** aynı ayar (öteleme 0, 12 epoch, seed 42, oylama none) iki koşuda katı hasar-F1 **0,082 ve 0,013** verdi. Tek seed + ~180 hasarlı bina → koşular arası fark ≈ 0,07. Aşama 1'in (öteleme 0/16/32: 0,082/0,038/0,060) sıralaması bu yüzden **bilgi taşımıyor**; 0,02 eşiği gürültünün çok altında. Eski checkpoint'ler yok → shift16/32 yeniden değerlendirilemez (kural 2 uygulanamadı).
+**Kuralların uygulanması (§6):**
+1. Oylama: sqrt_inv ile none farkı 0,081 > 0,02 (aynı checkpoint, eşleşik karşılaştırma → gürültüden bağımsız); sqrt_inv ile inv farkı 0,010 < 0,02 → eşit → basit olan **sqrt_inv SEÇİLDİ**, `--vote` varsayılanı yapıldı; tüm modellere ortak son işlem. (Tek checkpoint, ~180 hasarlı bina; sınırlılık.)
+2. Uygulanamadı (checkpoint yok) ve gürültü nedeniyle anlamsız → öteleme seçimi Aşama 1'den ÇIKARILDI.
+3. Eğitim-içi katı hasar-F1 0,280 < 0,30 → "eğitimde öğrenememe" dalı: Aşama 2 yürür, epoch 20. (0,30 eşiğine çok yakın ve eğitim-içi örnek ~46 hasarlı bina → kesin değil; kayma/girdi hizalaması hâlâ aday: kural 3'ün ikinci dalı Aşama 2 sonrası yeniden bakılır.)
+4. Kural 4'ün (katı hasar-F1 < 0,15 → pilot kapanır) kural 3 ile çakıştığı görüldü (yazım belirsizliği benim): **yorum: kural 4 Aşama 2 SONUNDA uygulanır** (20 epoch, sqrt_inv ile en iyi koşu < 0,15 ise pilot "ayırt edici değil" diye kapanır ve varsayılanlarla tam eğitime geçilir).
+**Aşama 2 (güncel):** 20 epoch, oylama sqrt_inv, Malatya katlaması, seed 42; 4 koşu: `p2_ref` (öteleme 0, `dam-p 0,5`), `p2_dam0`, `p2_w1133` (CE ağırlığı 1,1,3,3), `p2_shift16`; her koşu için eğitim-içi kontrol. **Karar eşiği 0,02 → 0,07** (gözlenen koşu-arası gürültüden; Aşama 2 sonuçları görülmeden): birincil ölçüt tol15 hasar-F1; bir seçenek `p2_ref`ten 0,07'den fazla iyiyse seçilir, değilse varsayılan (`dam-p 0,5`, ağırlıksız CE, öteleme 0, r50) kalır. Kodlayıcı (swint) karşılaştırması bu gürültüyle anlamsız → pilottan çıkarıldı, r50 sabit. Tam eğitimde gürültü için seed ≥3 zaten planlı.

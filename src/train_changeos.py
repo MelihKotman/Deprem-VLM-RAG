@@ -126,7 +126,7 @@ def main(argv=None):
     ap.add_argument("--dam-p", type=float, default=0.5, help="kırpımın hasarlı/yıkık piksel çevresinden seçilme oranı")
     ap.add_argument("--cls-weights", default=None, help="CE sınıf ağırlıkları 'arka,sağlam,hasarlı,yıkık' örn. 1,1,3,3")
     ap.add_argument("--no-photo", action="store_true")
-    ap.add_argument("--vote", choices=["none", "sqrt_inv", "inv"], default="none", help="nesne oylamasında sınıf önsel düzeltmesi (eğitim bina sayılarından)")
+    ap.add_argument("--vote", choices=["none", "sqrt_inv", "inv"], default="sqrt_inv", help="nesne oylamasında sınıf önsel düzeltmesi (eğitim bina sayılarından). Varsayılan sqrt_inv: Aşama 1b'de p1_shift0 üzerinde seçildi (docs §7)")
     ap.add_argument("--eval-in-sample", action="store_true", help="TANI: eğitim karolarından örnek üzerinde değerlendir (modelin eğitimde hasarı öğrenip öğrenmediği)")
     ap.add_argument("--no-cudnn-benchmark", action="store_true", help="Aşama 0'da 1. epoch tepe bellek 15,06 GB (benchmark çalışma alanı) görüldü; OOM olursa aç")
     ap.add_argument("--seed", type=int, default=42)
