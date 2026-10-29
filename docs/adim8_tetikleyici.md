@@ -32,3 +32,6 @@ Gerekçe (veri, manifest `status=ok`): kayma ≤ 15 px karo sayısı Adıyaman 1
 - Tek katlama (Osmaniye, 168 karo, tek event) → r'nin belirsizliği büyük; bu yüzden üç bölgeli kural.
 - Katlamanın eğitim etiketleri çok kaymış şehirlerden (Adıyaman, Malatya) geliyor; test benzeri hizalamada eğitilmiş modelin r'si farklı çıkabilir.
 - Toleranslı ölçüt tahmini bina çevresinde arar; tek büyük hasarlı bina yığını komşu sağlam binayı örtebilir (toleranslı skor hafif iyimser).
+
+## 7. Ek (29 Ekim 2026, pilot sonrası, tam eğitimden ve Osmaniye katlamasından ÖNCE): asgari skor kuralı
+Pilotta skor gürültü tabanındayken katı = tol5 = tol15 ve r ≈ 1,0 çıktı; §2'deki "payda 0 → tanımsız" kuralı "sıfıra yakın" durumu kapsamıyordu. Kural: Osmaniye katlamasında toleranslı (d = 15 px) hasar-F1 **< 0,15** ise r **"bilgi vermiyor"** (`bilgi_vermiyor`); bu durumda bina düzeyi ana, karo düzeyi ana tabloda yan yana ama ikincil, "karo eş-ana" kararı verilmez. ≥ 0,15 ise §4 aynen geçerli. Gerekçe ve sınırlar: `docs/adim8_tam_egitim_onkayit.md` §5. Kod: `src/dm3_eval.trigger_decision`; yapılandırma: `evaluation.fallback_trigger.min_tol15_damage_f1`.

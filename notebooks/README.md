@@ -10,3 +10,5 @@ Akış sırasıyla; her adım bir notebook. Çıktıları temizlenmiş halde com
 | `05_vlm_llm.ipynb` | Adım 11–12 |
 | `06_rag.ipynb` | Adım 10 |
 | `07_degerlendirme.ipynb` | Adım 14 |
+
+- `05_tam_egitim.ipynb` — Adım 8 tam eğitim (ön-kayıt: `docs/adim8_tam_egitim_onkayit.md`). `MODE="dry"` kuru koşu, `MODE="run"` tam eğitim (Commit modunda, iki GPU'da şeritler). Test bölmesine dokunmaz.

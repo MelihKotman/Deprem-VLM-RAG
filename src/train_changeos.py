@@ -35,7 +35,7 @@ from torch.utils.data import DataLoader
 
 from src.config import load
 from src.dm3_dataset import (EvalTiles, TrainTiles, collate_eval, collate_train, load_split, select_tiles)
-from src.dm3_eval import Acc, object_vote, trigger_r, vote_weights, zone
+from src.dm3_eval import Acc, object_vote, trigger_decision, trigger_r, vote_weights, zone
 from src.dm3_verify import find_root
 
 
@@ -299,8 +299,8 @@ def _save_metrics(out, acc, s, sec, a, info):
     res = dict(eval_seconds=round(sec, 1), eval_is_sanity_in_sample=info["eval_is_sanity_in_sample"],
                eval_groups=info["eval_groups"], by=s)
     if a.trigger_fold and a.holdout and a.holdout.lower().startswith('osmaniye') and all_:
-        r = trigger_r(all_)
-        res["trigger"] = dict(r=r, zone=zone(r), strict_damage_f1=all_["strict"]["damage_f1"],
+        r, zn = trigger_decision(all_)
+        res["trigger"] = dict(r=r, zone=zn, min_tol15_damage_f1=0.15, strict_damage_f1=all_["strict"]["damage_f1"],
                               tol15_damage_f1=all_["tol15"]["damage_f1"], note="ön-kayıtlı; docs/adim8_tetikleyici.md")
     (out / "metrics.json").write_text(json.dumps(res, ensure_ascii=False, indent=1))
     pd.DataFrame(acc.tile_rows).to_csv(out / "per_tile.csv", index=False)

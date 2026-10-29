@@ -1,6 +1,6 @@
 """dm3_eval + dm3_dataset birim testleri (model/GPU/gerçek veri gerekmez). Çalıştır: python -m src.selftest_eval"""
 import numpy as np
-from src.dm3_eval import Acc, object_vote, trigger_r, zone
+from src.dm3_eval import Acc, object_vote, trigger_decision, trigger_r, zone
 
 META = dict(tile="t", event=1, group="G", tier="T0", agir_bos=0)
 
@@ -83,6 +83,14 @@ def main():
     assert rr is not None and 0 <= rr <= 1.0 and zone(0.6) == "karo_es_ana" and zone(0.8) == "ara_bolge" and zone(0.9) == "yalniz_bina"
     assert trigger_r({"strict": {"damage_f1": 0.0}, "tol15": {"damage_f1": 0.0}}) is None
     print("7 tetikleyici r = %.2f (%s) OK" % (rr, zone(rr)))
+    # 8 asgari-skor kuralı (ön-kayıt 29 Ekim): tol15 hasar-F1 < 0,15 → bilgi_vermiyor; ≥ 0,15 → zone(r)
+    lo = {"strict": {"damage_f1": 0.05}, "tol15": {"damage_f1": 0.05}}
+    hi = {"strict": {"damage_f1": 0.20}, "tol15": {"damage_f1": 0.40}}
+    assert trigger_decision(lo)[1] == "bilgi_vermiyor" and trigger_decision(hi) == (0.5, "karo_es_ana")
+    assert trigger_decision({"strict": {"damage_f1": 0.0}, "tol15": {"damage_f1": 0.0}}) == (None, "bilgi_vermiyor")
+    assert trigger_decision({"strict": {"damage_f1": 0.14}, "tol15": {"damage_f1": 0.149}})[1] == "bilgi_vermiyor"
+    assert trigger_decision({"strict": {"damage_f1": 0.15}, "tol15": {"damage_f1": 0.15}})[1] == "yalniz_bina"
+    print("8 asgari-skor kuralı OK")
     # 8. oylama ağırlığı: ağırlıksızda sağlam kazanan bileşen, ağırlıkla yıkığa döner
     from src.dm3_eval import vote_weights
     loc = np.zeros((32, 32), np.float32); loc[4:20, 4:20] = 0.9

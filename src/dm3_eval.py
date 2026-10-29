@@ -190,6 +190,19 @@ def zone(r):
     return "karo_es_ana" if r < 0.70 else ("ara_bolge" if r < 0.85 else "yalniz_bina")
 
 
+MIN_TOL15_DAMAGE_F1 = 0.15   # ön-kayıt 29 Ekim 2026 (docs/adim8_tam_egitim_onkayit.md §5); config: evaluation.fallback_trigger.min_tol15_damage_f1
+
+
+def trigger_decision(summary_all: dict, min_score: float = MIN_TOL15_DAMAGE_F1):
+    """Asgari-skor kurallı tetikleyici kararı. toleranslı (d=15) hasar-F1 < min_score ise r bilgi vermez (gürültü tabanı) → 'bilgi_vermiyor'
+    (karar: bina düzeyi ana, karo düzeyi ikincil yan yana). Aksi halde zone(r). -> (r, bölge)"""
+    r = trigger_r(summary_all)
+    b = summary_all["tol15"]["damage_f1"]
+    if b is None or b != b or b < min_score:
+        return r, "bilgi_vermiyor"
+    return r, zone(r)
+
+
 def vote_weights(n_by_class, mode):
     """Eğitim kümesi bina sayılarından (sağlam, hasarlı, yıkık) oylama ağırlığı; sağlam = 1.
     none → None; inv → N_sağlam/N_c; sqrt_inv → sqrt(N_sağlam/N_c). Sınıf önsel düzeltmesi (ChangeOS'un sabit 8/38/25/11'inin veriye bağlı karşılığı)."""
