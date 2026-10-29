@@ -84,6 +84,9 @@ def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None, vote_w=Non
             keys = [("ALL",), ("group", m["group"]), ("tier", m["tier"]), ("group_tier", m["group"], m["tier"])]
             acc.update(keys, g, pred, v, m)
             n += 1
+            if n % 25 == 0 or n == len(loader.dataset):
+                el = time.time() - t0
+                print(f">>> DEĞERLENDİRME {n}/{len(loader.dataset)} karo | geçen {el:.0f} sn | kalan ≈ {el / n * (len(loader.dataset) - n):.0f} sn", flush=True)
         if max_tiles and n >= max_tiles:
             break
     s = acc.summary()
@@ -126,6 +129,8 @@ def main(argv=None):
     ap.add_argument("--dam-p", type=float, default=0.5, help="kırpımın hasarlı/yıkık piksel çevresinden seçilme oranı")
     ap.add_argument("--cls-weights", default=None, help="CE sınıf ağırlıkları 'arka,sağlam,hasarlı,yıkık' örn. 1,1,3,3")
     ap.add_argument("--no-photo", action="store_true")
+    ap.add_argument("--align-post", choices=["none", "oracle"], default="none", help="TANI: sonrası görüntüyü manifest dx_post/dy_post ile hizala (etiket türevli; yalnız nedensellik testi, gerçek yöntem değil). Eğitim VE değerlendirme aynı modda")
+    ap.add_argument("--in-sample-n", type=int, default=40, help="--eval-in-sample karo sayısı")
     ap.add_argument("--vote", choices=["none", "sqrt_inv", "inv"], default="sqrt_inv", help="nesne oylamasında sınıf önsel düzeltmesi (eğitim bina sayılarından). Varsayılan sqrt_inv: Aşama 1b'de p1_shift0 üzerinde seçildi (docs §7)")
     ap.add_argument("--eval-in-sample", action="store_true", help="TANI: eğitim karolarından örnek üzerinde değerlendir (modelin eğitimde hasarı öğrenip öğrenmediği)")
     ap.add_argument("--no-cudnn-benchmark", action="store_true", help="Aşama 0'da 1. epoch tepe bellek 15,06 GB (benchmark çalışma alanı) görüldü; OOM olursa aç")
@@ -163,11 +168,11 @@ def main(argv=None):
     if a.pilot and len(tr_df) > a.pilot_tiles:
         tr_df = tr_df.sample(n=a.pilot_tiles, random_state=a.seed).reset_index(drop=True)
     if a.eval_in_sample:
-        ev_df = tr_df.sample(n=min(40, len(tr_df)), random_state=a.seed).reset_index(drop=True); sanity = True
+        ev_df = tr_df.sample(n=min(a.in_sample_n, len(tr_df)), random_state=a.seed).reset_index(drop=True); sanity = True
     if ev_df is None:                                   # değerlendirme kümesi verilmedi → eğitim içi SANITY (genelleme değil)
         ev_df = tr_df.sample(n=min(24, len(tr_df)), random_state=a.seed).reset_index(drop=True)
         sanity = True
-    if a.pilot and len(ev_df) > 40:
+    if a.pilot and not a.eval_in_sample and len(ev_df) > 40:
         ev_df = ev_df.sample(n=40, random_state=a.seed).reset_index(drop=True)
     if a.eval_max_tiles and len(ev_df) > a.eval_max_tiles:
         ev_df = ev_df.sample(n=a.eval_max_tiles, random_state=a.seed).reset_index(drop=True)
@@ -183,7 +188,7 @@ def main(argv=None):
           f"{'  (SANITY: eğitim içi, genelleme değil)' if sanity else ''}")
 
     model = build_model(a.encoder, pretrained=not a.no_pretrained).to(dev)
-    ev_ds = EvalTiles(ev_df, root, cache_dir=a.cache_dir)
+    ev_ds = EvalTiles(ev_df, root, cache_dir=a.cache_dir, align=a.align_post == "oracle")
     ev_dl = DataLoader(ev_ds, batch_size=1, shuffle=False, num_workers=min(a.workers, 2), collate_fn=collate_eval)
 
     if a.eval_only:
@@ -194,7 +199,7 @@ def main(argv=None):
         return 0
 
     tr_ds = TrainTiles(tr_df, root, crop=a.crop, crops_per_tile=a.crops_per_tile, dam_p=a.dam_p,
-                       post_shift_px=a.post_shift, photo=not a.no_photo, cache_dir=a.cache_dir, seed=a.seed)
+                       post_shift_px=a.post_shift, photo=not a.no_photo, cache_dir=a.cache_dir, seed=a.seed, align=a.align_post == "oracle")
     tiles_per_batch = max(1, a.batch // a.crops_per_tile)
     g = torch.Generator(); g.manual_seed(a.seed)
     tr_dl = DataLoader(tr_ds, batch_size=tiles_per_batch, shuffle=True, num_workers=a.workers, drop_last=True,
@@ -247,12 +252,20 @@ def main(argv=None):
             if not np.isfinite(float(loss)):
                 raise SystemExit(f"kayıp sonlu değil (epoch {ep}, adım {nb}) — fp16/öğrenme oranı kontrol et")
             t_prev = time.time()
+            if nb % max(1, steps_per_epoch // 4) == 0 and ep == ep0:
+                print(f"    epoch {ep + 1} adım {nb}/{steps_per_epoch} | {time.time() - t_ep:.0f} sn", flush=True)
         et = time.time() - t_ep; epoch_times.append(et)
         rec = dict(epoch=ep + 1, sec=round(et, 1), data_wait_s=round(wait, 1), gpu_s=round(gpu, 1), steps=nb,
                    crops_per_s=round(nb * tiles_per_batch * a.crops_per_tile / et, 2), lr=sched.get_last_lr()[0],
                    peak_mem_GB=round(torch.cuda.max_memory_allocated() / 1e9, 2) if dev == "cuda" else None,
                    **{k: round(v / max(nb, 1), 4) for k, v in acc_l.items()})
         print(json.dumps(rec, ensure_ascii=False))
+        done = ep + 1 - ep0
+        steady = epoch_times[1:] if len(epoch_times) > 1 else epoch_times
+        rem_s = float(np.mean(steady)) * (a.epochs - ep - 1)
+        fin = time.strftime("%H:%M", time.gmtime(time.time() + rem_s + 3 * 3600))   # TSİ (UTC+3)
+        print(f">>> İLERLEME epoch {ep + 1}/{a.epochs} (%{100 * (ep + 1) / a.epochs:.0f}) | geçen {(time.time() - t_start) / 60:.0f} dk | "
+              f"KALAN ≈ {rem_s / 60:.0f} dk | tahmini bitiş ≈ {fin} (TSİ)", flush=True)
         with open(out / "log.jsonl", "a") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         torch.save(dict(model=model.state_dict(), opt=opt.state_dict(), sched=sched.state_dict(),

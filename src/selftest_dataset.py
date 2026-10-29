@@ -60,6 +60,22 @@ def main():
     assert torch.equal(x0[:, :3], x1[:, :3]) and torch.equal(d0, d1) and not torch.equal(x0[:, 3:], x1[:, 3:])
     print("öteleme yalnız sonrası görüntüde OK")
 
+    # oracle hizalama: sonrası kayması geri alınmalı (sentetik: dx=+sh, dy=-sh) → hizalı sonrası ile öncesi arasındaki fark küçülür
+    import cv2
+    al = EvalTiles(ev, root, align=True); un = EvalTiles(ev, root, align=False)
+    errs_al, errs_un = [], []
+    for i in range(len(ev)):
+        if not (ev.dx_post.iloc[i]):
+            continue
+        xa, ga, va, _ = al[i]; xu, gu, vu, _ = un[i]
+        m = (ga > 0) & va & vu                                   # bina pikselleri (parlak): hizalıysa sonrası ≈ öncesi (sağlam/hasarlı üst yarı koyu; yıkık gürültü) → yalnız sağlam binalarda karşılaştır
+        m = m & (ga == 1)
+        if m.sum() < 50:
+            continue
+        errs_al.append(float((xa[3:, m] - xa[:3, m]).abs().mean())); errs_un.append(float((xu[3:, m] - xu[:3, m]).abs().mean()))
+    assert errs_al and np.mean(errs_al) < 0.6 * np.mean(errs_un), (np.mean(errs_al), np.mean(errs_un))
+    print("oracle hizalama OK (öncesi–sonrası fark %.3f → %.3f)" % (np.mean(errs_un), np.mean(errs_al)))
+
     evd = EvalTiles(ev, root)
     xe, ge, ve, me = collate_eval([evd[0]])
     assert xe.shape == (1, 6, 1024, 1024) and ge.max() <= 3 and ve.dtype == torch.bool and me[0]["group"] == "Malatya"

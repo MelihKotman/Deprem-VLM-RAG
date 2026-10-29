@@ -50,6 +50,8 @@ def tile_paths(root: Path, split: str, ev: int, tile: str):
 def load_split(scenario: str, cfg: dict | None = None) -> pd.DataFrame:
     cfg = cfg or load()
     df = pd.read_csv(Path(cfg["_root"]) / cfg["split"][scenario])
+    man = pd.read_csv(Path(cfg["_root"]) / cfg["data"]["manifest"], usecols=["event", "tile", "dx_post", "dy_post"])
+    df = df.merge(man, on=["event", "tile"], how="left")      # sonrası kayması (ETİKET kenarından ölçülmüş; yalnız 'oracle' hizalama tanısında kullanılır)
     val = pd.read_csv(Path(cfg["_root"]) / cfg["split"]["validity"])[["event", "tile", "gecerli_oran", "agir_bos"]]
     df = df.merge(val, on=["event", "tile"], how="left", validate="one_to_one")
     assert df.gecerli_oran.notna().all(), "geçerlilik tablosunda eksik karo"
@@ -85,13 +87,19 @@ def select_tiles(df: pd.DataFrame, *, holdout: str | None = None, trigger_fold: 
 
 
 # ---------------------------------------------------------------- karo okuma
-def read_tile(root: Path, split: str, ev: int, tile: str):
-    """-> pre RGB uint8 HxWx3, post RGB uint8, dam uint8 (0..3), valid bool."""
+def read_tile(root: Path, split: str, ev: int, tile: str, shift=None):
+    """-> pre RGB uint8 HxWx3, post RGB uint8, dam uint8 (0..3), valid bool.
+    shift=(dx,dy): TANI (oracle hizalama) — sonrası, out(y,x)=post(y+dy,x+dx) olacak şekilde kaydırılır (manifest dx_post/dy_post
+    sözleşmesi: score(G,E,dx,dy) = G[ys+dy, xs+dx]); kayan boş kenar geçersiz sayılır. Bu kayma ETİKETTEN ölçüldüğü için
+    gerçek (etiketsiz) bir yöntem DEĞİLDİR; yalnız 'kayma sorunun nedeni mi' sorusunu yanıtlamak içindir."""
     pre_p, post_p, mp_ = tile_paths(root, split, ev, tile)
     pre = cv2.imread(str(pre_p), cv2.IMREAD_COLOR)
     post = cv2.imread(str(post_p), cv2.IMREAD_COLOR)
     if pre is None or post is None:
         raise FileNotFoundError(f"görüntü okunamadı: {pre_p} / {post_p}")
+    if shift is not None and (shift[0] or shift[1]):
+        M = np.float32([[1, 0, -shift[0]], [0, 1, -shift[1]]])
+        post = cv2.warpAffine(post, M, (post.shape[1], post.shape[0]), flags=cv2.INTER_NEAREST, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
     valid, _, _ = valid_mask(pre, post)
     dam = np.zeros(pre.shape[:2], np.uint8)
     for k, c in enumerate(CLS, start=1):
@@ -106,7 +114,8 @@ class _Base(Dataset):
     """Karoları (isteğe bağlı) disk önbelleğiyle okur. Önbellek: <cache_dir>/<tile>.npy, uint8 HxWx8
     (pre 3, post 3, dam 1, valid 1); mmap ile açılır — Kaggle /kaggle/working (20 GB) içinde ~8 MB/karo."""
 
-    def __init__(self, df: pd.DataFrame, root: Path, cache_dir: str | None = None):
+    def __init__(self, df: pd.DataFrame, root: Path, cache_dir: str | None = None, align: bool = False):
+        self.align = align
         self.df = df.reset_index(drop=True)
         self.root = Path(root)
         self.cache = Path(cache_dir) if cache_dir else None
@@ -119,17 +128,22 @@ class _Base(Dataset):
     def _get(self, i):
         r = self.df.iloc[i]
         if self.cache:
-            f = self.cache / f"{r.tile}.npy"
+            f = self.cache / f"{r.tile}{'_al' if self.align else ''}.npy"
             if not f.exists():
-                pre, post, dam, valid = read_tile(self.root, r.split, int(r.event), r.tile)
+                pre, post, dam, valid = read_tile(self.root, r.split, int(r.event), r.tile, self._shift(r))
                 arr = np.concatenate([pre, post, dam[..., None], valid.astype(np.uint8)[..., None]], axis=2)
                 tmp = f.with_suffix(f".tmp{os.getpid()}.npy")
                 np.save(tmp, arr)
                 os.replace(tmp, f)
             a = np.load(f, mmap_mode="r")
             return r, a[..., 0:3], a[..., 3:6], a[..., 6], a[..., 7].astype(bool)
-        pre, post, dam, valid = read_tile(self.root, r.split, int(r.event), r.tile)
+        pre, post, dam, valid = read_tile(self.root, r.split, int(r.event), r.tile, self._shift(r))
         return r, pre, post, dam, valid
+
+    def _shift(self, r):
+        if not self.align or not (pd.notna(r.dx_post) and pd.notna(r.dy_post)):
+            return None
+        return int(r.dx_post), int(r.dy_post)
 
 
 def _norm(img_u8: np.ndarray) -> torch.Tensor:
@@ -139,8 +153,8 @@ def _norm(img_u8: np.ndarray) -> torch.Tensor:
 
 class TrainTiles(_Base):
     def __init__(self, df, root, *, crop=512, crops_per_tile=4, dam_p=0.5, post_shift_px=0, photo=True,
-                 cache_dir=None, seed=42):
-        super().__init__(df, root, cache_dir)
+                 cache_dir=None, seed=42, align=False):
+        super().__init__(df, root, cache_dir, align)
         self.crop, self.K, self.dam_p, self.R, self.photo = crop, crops_per_tile, dam_p, int(post_shift_px), photo
         self.seed = seed
         self.epoch = 0

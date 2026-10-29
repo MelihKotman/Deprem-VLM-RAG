@@ -66,9 +66,12 @@ def main(argv=None):
         sub.to_csv(repo / cfg["split"][sc], index=False)
         keep_all.append(sub[["event", "tile", "split"]])
     keep = pd.concat(keep_all).drop_duplicates()
+    shifts = []
     for r in keep.itertuples():
         blank = rng.random() < 0.2
-        pre, post, masks = make_tile(rng, a.size, shift=int(rng.integers(0, 12)), blank_strip=blank)
+        sh = int(rng.integers(0, 12))
+        shifts.append(dict(event=r.event, tile=r.tile, dx_post=sh, dy_post=-sh))
+        pre, post, masks = make_tile(rng, a.size, shift=sh, blank_strip=blank)
         b, idr, pf = (data / "train", "train_images", "train") if r.split == "train" else (data / "bench", "test_images", "test")
         suf = r.tile.split("_", 2)[2]
         (b / idr).mkdir(parents=True, exist_ok=True)
@@ -80,6 +83,8 @@ def main(argv=None):
                 d.mkdir(parents=True, exist_ok=True)
                 cv2.imwrite(str(d / f"{r.tile}.png"), m)
     val.merge(keep, on=["event", "tile"]).drop(columns=["split"]).to_csv(repo / cfg["split"]["validity"], index=False)
+    (repo / "data_manifest" / "disasterm3_turkiye").mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(shifts).to_csv(repo / cfg["data"]["manifest"], index=False)   # sahte manifest: yalnız dx_post/dy_post (make_tile: içerik (+sh,-sh) kayar → hizalama dx=+sh, dy=-sh)
     print("sentetik veri:", data, "| sahte repo kökü:", repo, "| karo:", len(keep))
 
 
