@@ -37,7 +37,7 @@ split:                      # Adım 7'de donduruldu (28 Ekim 2026); değişiklik
   audit_threshold_visible_unlabeled: 0.10   # bakmadan önce yazıldı (28 Ekim 2026), notlar/bolme-esik-karari.md
 
 models:                     # Adım 8 ve 12'de doldurulur: ad + sürüm + tarih zorunlu
-  visual:    {name: null, version: null}
+  visual:    {name: ChangeOS, version: torchange-0.0.5+ever-beta-0.5.6, encoder: r50, encoder_status: provisional_pilot, pretrained: imagenet_only}   # Adım 8 (29 Ekim 2026); encoder pilotta kesinleşir; BRIGHT/xBD checkpoint YASAK
   vlm_open:  {api: evren, api_name: null, version: null, temperature: 0}   # `auto` YASAK
   llm_open:  {api: evren, api_name: null, version: null, temperature: 0}
   closed:    {api: gemini, api_name: null, version: null, temperature: 0}
