@@ -13,3 +13,4 @@ Akış sırasıyla; her adım bir notebook. Çıktıları temizlenmiş halde com
 
 - `05_tam_egitim.ipynb` — Adım 8 tam eğitim (ön-kayıt: `docs/adim8_tam_egitim_onkayit.md`). `MODE="dry"` kuru koşu, `MODE="run"` tam eğitim (Commit modunda, iki GPU'da şeritler). Test bölmesine dokunmaz.
 - `06_test_degerlendirme.ipynb` — Adım 8 test değerlendirmesi, TEK TUR (`--allow-test` yalnız burada; kapı: tüm checkpoint + tetikleyici sonucu girdi olarak ekli). Rapor: `src/test_report.py`.
+- `07_katlama_olasiliklari.ipynb` — Adım 8B-1 (ön-kayıt `docs/adim8b_onkayit.md`): Osmaniye-dışarıda mevcut ağırlıkla değerlendirme + Adıyaman-dışarıda / Malatya-dışarıda yeni katlamalar; hepsinde `--dump-components` ile bina bileşeni olasılıkları (`src/dm3_probs.py`). Test bölmesine dokunmaz.

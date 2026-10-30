@@ -68,7 +68,7 @@ def loss_fn(loc_logit, dam_logit, dam_t, cls_w):
 
 # ---------------------------------------------------------------- değerlendirme
 @torch.no_grad()
-def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None, vote_w=None):
+def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None, vote_w=None, dump=None):
     model.eval()
     acc = Acc()
     t0 = time.time(); n = 0
@@ -83,6 +83,8 @@ def evaluate(model, loader, dev, fp16, max_tiles=None, save_dir=None, vote_w=Non
             g = gt[i].numpy(); v = valid[i].numpy()
             keys = [("ALL",), ("group", m["group"]), ("tier", m["tier"]), ("group_tier", m["group"], m["tier"])]
             acc.update(keys, g, pred, v, m)
+            if dump is not None:                       # 8B-1: ham bileşen olasılıkları (ölçütü değiştirmez)
+                dump.add(m, g, v, loc[i], dam[i], pred)
             n += 1
             if n % 25 == 0 or n == len(loader.dataset):
                 el = time.time() - t0
@@ -143,6 +145,7 @@ def main(argv=None):
     ap.add_argument("--pilot-tiles", type=int, default=64)
     ap.add_argument("--eval-max-tiles", type=int, default=None)
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--dump-components", action="store_true", help="8B-1: değerlendirme karolarında bina bileşeni başına ham sınıf olasılıklarını components.csv.gz + tile_scores.csv olarak yaz (src/dm3_probs.py)")
     ap.add_argument("--ckpt", default=None)
     ap.add_argument("--out", required=True)
     ap.add_argument("--root", default=None)
@@ -194,8 +197,11 @@ def main(argv=None):
     if a.eval_only:
         sd = torch.load(a.ckpt, map_location=dev)
         model.load_state_dict(sd["model"] if "model" in sd else sd)
-        acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w)
+        dump = _make_dump(a, sanity)
+        acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w, dump=dump)
         _save_metrics(out, acc, s, sec, a, info)
+        if dump is not None:
+            dump.save(out)
         return 0
 
     tr_ds = TrainTiles(tr_df, root, crop=a.crop, crops_per_tile=a.crops_per_tile, dam_p=a.dam_p,
@@ -275,7 +281,8 @@ def main(argv=None):
             return 3
     torch.save(model.state_dict(), out / "model_final.pt")
 
-    acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w)
+    dump = _make_dump(a, sanity)
+    acc, s, sec = evaluate(model, ev_dl, dev, fp16, vote_w=vote_w, dump=dump)
     mean_ep = float(np.mean(epoch_times[1:])) if len(epoch_times) > 1 else (float(epoch_times[0]) if epoch_times else None)   # 1. epoch (önbellek/benchmark ısınması) hariç
     last = json.loads((out / "log.jsonl").read_text().strip().splitlines()[-1])
     timing = dict(epochs_run=len(epoch_times), mean_epoch_s=mean_ep, first_epoch_s=epoch_times[0] if epoch_times else None, steps_per_epoch=steps_per_epoch,
@@ -291,7 +298,18 @@ def main(argv=None):
     (out / "timing.json").write_text(json.dumps(timing, ensure_ascii=False, indent=1))
     print("timing:", json.dumps(timing, ensure_ascii=False))
     _save_metrics(out, acc, s, sec, a, info)
+    if dump is not None:
+        dump.save(out)
     return 0
+
+
+def _make_dump(a, sanity):
+    if not a.dump_components:
+        return None
+    if sanity:
+        raise SystemExit("--dump-components yalnız dışarıdaki şehir/kontrol üzerinde anlamlıdır (eğitim-içi olasılıklar iyimser): --holdout veya --eval-role verin")
+    from src.dm3_probs import ComponentDump
+    return ComponentDump()
 
 
 def _save_metrics(out, acc, s, sec, a, info):

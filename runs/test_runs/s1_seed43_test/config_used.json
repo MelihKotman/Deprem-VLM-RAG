@@ -1,0 +1,71 @@
+{
+ "args": {
+  "scenario": "S1",
+  "holdout": null,
+  "trigger_fold": false,
+  "eval_role": "test",
+  "allow_test": true,
+  "encoder": "r50",
+  "no_pretrained": false,
+  "epochs": 50,
+  "crop": 512,
+  "crops_per_tile": 4,
+  "batch": 8,
+  "lr": 0.0001,
+  "wd": 0.01,
+  "warmup_epochs": 1.0,
+  "post_shift": 0,
+  "dam_p": 0.5,
+  "cls_weights": null,
+  "no_photo": false,
+  "align_post": "none",
+  "in_sample_n": 40,
+  "vote": "sqrt_inv",
+  "eval_in_sample": false,
+  "no_cudnn_benchmark": false,
+  "seed": 42,
+  "workers": 2,
+  "cache_dir": "/tmp/cache_eval1",
+  "max_minutes": null,
+  "resume": false,
+  "pilot": false,
+  "pilot_tiles": 64,
+  "eval_max_tiles": null,
+  "eval_only": true,
+  "ckpt": "/kaggle/input/notebooks/melihkotman/05-tam-egitim/runs/s1_seed43/model_final.pt",
+  "out": "/kaggle/working/test_runs/s1_seed43_test",
+  "root": null
+ },
+ "config_sha1": "7629649b79",
+ "split_file": "data_manifest/splits/split_S1_v1.csv",
+ "split_sha1_config": "28e3fee845",
+ "n_train": 474,
+ "n_train_full": 474,
+ "n_eval": 396,
+ "eval_is_sanity_in_sample": false,
+ "train_building_counts": [
+  36246,
+  695,
+  682
+ ],
+ "vote_weights": [
+  1.0,
+  7.221670027466743,
+  7.290173356373798
+ ],
+ "train_groups": [
+  "Adiyaman",
+  "Malatya",
+  "Osmaniye"
+ ],
+ "eval_groups": [
+  "Antakya/Defne",
+  "bilinmiyor(event6)",
+  "bilinmiyor(event7)"
+ ],
+ "python": "3.13.15",
+ "torch": "2.11.0+cu128",
+ "device": "cuda",
+ "gpu": "Tesla T4",
+ "data_root": "/kaggle/input/datasets/melihkotman/disasterm3-turkiye/dm3_turkiye"
+}
