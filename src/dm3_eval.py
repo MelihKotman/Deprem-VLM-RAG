@@ -113,9 +113,18 @@ class Acc:
         dp = float(((pred >= 2) & v).sum() / p_b) if p_b else float("nan")
         gd = int(comp[0][0][2].sum() > 0); pd_ = int(((pred == 3) & v).sum() > 0)
         # karoda yıkık bina var mı: gerçek = yıkık bileşen sayısı > 0 ; tahmin = yıkık tahmin bileşeni var
-        self.tile_rows.append(dict(tile=tile["tile"], event=tile["event"], group=tile["group"], tier=tile["tier"],
-                                   agir_bos=tile["agir_bos"], n_gt=comp[0][2], dens_gt=dg, dens_pred=dp,
-                                   gt_destroyed=gd, pred_destroyed=pd_))
+        row = dict(tile=tile["tile"], event=tile["event"], group=tile["group"], tier=tile["tier"],
+                   agir_bos=tile["agir_bos"], n_gt=comp[0][2], dens_gt=dg, dens_pred=dp,
+                   gt_destroyed=gd, pred_destroyed=pd_)
+        # karo başına bileşen sayaçları (karo bazlı bootstrap + ikili hasar var/yok için; src/test_report.py)
+        for t in TOLS:
+            C, fp, _ = comp[t]
+            for r_ in range(3):
+                for c_ in range(NC):
+                    row[f"C{t}_t{r_ + 1}p{c_}"] = int(C[r_, c_])
+            for c_ in range(3):
+                row[f"fp{t}_c{c_ + 1}"] = int(fp[c_])
+        self.tile_rows.append(row)
         for k in keys:
             s = self._slot(k)
             s["n_tiles"] += 1

@@ -12,3 +12,4 @@ Akış sırasıyla; her adım bir notebook. Çıktıları temizlenmiş halde com
 | `07_degerlendirme.ipynb` | Adım 14 |
 
 - `05_tam_egitim.ipynb` — Adım 8 tam eğitim (ön-kayıt: `docs/adim8_tam_egitim_onkayit.md`). `MODE="dry"` kuru koşu, `MODE="run"` tam eğitim (Commit modunda, iki GPU'da şeritler). Test bölmesine dokunmaz.
+- `06_test_degerlendirme.ipynb` — Adım 8 test değerlendirmesi, TEK TUR (`--allow-test` yalnız burada; kapı: tüm checkpoint + tetikleyici sonucu girdi olarak ekli). Rapor: `src/test_report.py`.
