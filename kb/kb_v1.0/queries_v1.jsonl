@@ -1,0 +1,20 @@
+{"qid": "q01", "query": "What does EMS-98 grade G5 mean for a reinforced-concrete building?", "gold": {"ems98.rc.g5": "tam"}, "answer_bearing": true}
+{"qid": "q02", "query": "Roof tiles are dislodged and chimneys fracture at the roof line on a masonry house. Which EMS-98 grade?", "gold": {"ems98.ma.g3": "tam"}, "answer_bearing": true}
+{"qid": "q03", "query": "Permanent drift between storeys larger than 3% of storey height: what class under the regulation?", "gold": {"yon25.ext_drift": "tam"}, "answer_bearing": true}
+{"qid": "q04", "query": "How large must the rigid rotation of a building be before it is classed AYB?", "gold": {"yon25.ext_rotation": "tam"}, "answer_bearing": true}
+{"qid": "q05", "query": "Can slight or moderate damage be assigned from satellite imagery alone?", "gold": {"yon25.remote_limit": "tam", "yon25.int_classes": "kısmen", "ems98.remote_obs": "kısmen"}, "answer_bearing": true}
+{"qid": "q06", "query": "What does the label 'destroyed' include in the DisasterM3 dataset?", "gold": {"dm3.destroyed": "tam"}, "answer_bearing": true}
+{"qid": "q07", "query": "Kısmi göçme olan bir bina yönetmeliğe göre hangi sınıfa girer?", "gold": {"yon25.ext_collapse_partial": "tam"}, "answer_bearing": true}
+{"qid": "q08", "query": "Which damage class codes does the 2025 assessment regulation use?", "gold": {"yon25.codes": "tam"}, "answer_bearing": true}
+{"qid": "q09", "query": "When does the 2025 damage assessment regulation come into force?", "gold": {"yon25.status": "tam"}, "answer_bearing": true}
+{"qid": "q10", "query": "Does the damage assessment say anything about the seismic performance or risk of the building?", "gold": {"yon25.scope": "tam", "gen14.scope": "tam"}, "answer_bearing": true}
+{"qid": "q11", "query": "May drone or aircraft imagery be used for the official assessment, and for which parts?", "gold": {"yon25.aerial_m34": "tam"}, "answer_bearing": true}
+{"qid": "q12", "query": "What did the 2014 circular say about buildings that cannot be entered?", "gold": {"gen14.sec4_notentered": "tam"}, "answer_bearing": true}
+{"qid": "q13", "query": "Which rules were used for damage assessment after the February 2023 earthquakes?", "gold": {"ayd23.context": "tam", "gen14.scope": "kısmen", "yon25.status": "kısmen"}, "answer_bearing": true}
+{"qid": "q14", "query": "How do intact, damaged and destroyed map to EMS-98 grades?", "gold": {"map.intact": "kısmen", "map.damaged": "kısmen", "map.destroyed": "kısmen"}, "answer_bearing": true}
+{"qid": "q15", "query": "Crack width that corresponds to element damage type D in a masonry building", "gold": {"yon25.int_ma_types": "tam"}, "answer_bearing": true}
+{"qid": "q16", "query": "What is the average repair cost per square metre of a heavily damaged building in Turkey?", "gold": {}, "answer_bearing": false}
+{"qid": "q17", "query": "How many buildings collapsed in Antakya in 2023?", "gold": {}, "answer_bearing": false}
+{"qid": "q18", "query": "Can the length of a building's shadow be used to estimate its height?", "gold": {}, "answer_bearing": false}
+{"qid": "q19", "query": "A masonry wall is visibly rotating out of its plane. What does the regulation conclude?", "gold": {"yon25.ext_masonry_wall": "tam"}, "answer_bearing": true}
+{"qid": "q20", "query": "Resmî raporlamada 'tespit yapılamadı' sınıfı var mı?", "gold": {"ayd23.context": "tam", "yon25.gb_te": "kısmen"}, "answer_bearing": true}
