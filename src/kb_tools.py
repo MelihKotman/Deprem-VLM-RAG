@@ -187,8 +187,13 @@ def eval_hybrid():
     import numpy as np
     es = load(); bm = BM25([embed_text(e) for e in es]); V = np.load(Path(os.environ.get("RAG_RUNS", "runs")) / "kb" / f"{VER}_embeddings.npy")
     V = V / np.linalg.norm(V, axis=1, keepdims=True); scores_log = {}
+    # T4 (≈15 GB) iki 4B fp16 modeli birlikte taşımaz: önce tüm sorgu vektörleri, sonra gömücü bellekten atılır, sonra rerank.
+    QV = {q["query"]: embed([q["query"]], is_query=True)[0][0] for q in queries()}
+    if "e" in _M:
+        import gc, torch; del _M["e"]; gc.collect()
+        if torch.cuda.is_available(): torch.cuda.empty_cache()
     def retr(q, es_):
-        qv, _ = embed([q], is_query=True); qv = qv[0] / np.linalg.norm(qv[0])
+        qv = QV[q] / np.linalg.norm(QV[q])
         dense = rank((V @ qv).tolist(), CFG["dense_k"]); lex = rank(bm.score(q), CFG["bm25_k"])
         fused = rrf([lex, dense], CFG["rrf_c"])[:CFG["rerank_in"]]
         rr, _ = rerank(q, [embed_text(es[i]) for i in fused], CFG["final_k"]); scores_log[q] = [(es[fused[i]]["id"], s) for i, s in rr]
@@ -198,6 +203,9 @@ def eval_hybrid():
     print("rerank skorları kaydedildi (eşik YOK; Adım 12'de ayrı kümede belirlenir):", out)
 
 if __name__ == "__main__":
-    a = sys.argv[1]; kw = {"tok_id": sys.argv[3]} if a == "tokens" and len(sys.argv) > 3 else {}
-    if a == "tokens" and "--core" in sys.argv: kw["core"] = True
+    a = sys.argv[1]; kw = {}
+    if a == "tokens":
+        pos = [x for x in sys.argv[2:] if not x.startswith("--")]
+        if pos: kw["tok_id"] = pos[0]
+        if "--core" in sys.argv: kw["core"] = True
     globals()[a](**kw)
