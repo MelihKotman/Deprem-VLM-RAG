@@ -1,5 +1,7 @@
 # Adım 8B ön-kaydı — yükseklik-kaybı geometrisi ve kalibre olasılık + karo bağlamı (30 Ekim 2026)
 
+> **KAPANDI (30 Ekim 2026).** K0, K1 ve Kapı T ön-kayıtlı kapıları geçmedi; sonuç tablosu `docs/adim8b_sonuc.md`. Aşağıdaki metin sonuçlardan önce yazıldığı haliyle korunmuştur (değiştirilmedi).
+
 Durum: YAZILDI, onaylandı (Melih, 30 Ekim: "kapılar koyarız, sen nasıl düşünüyorsan öyle olsun"). Yazıldığı anda hiçbir 8B sonucu görülmedi. Görülmüş olan: S1/S2 test v1 sonuçları (toplam tablolar) ve hoca görüşmesi; yani fikirler test sonrası doğdu → tüm 8B sonuçları "test sonrası tasarlanan, keşfedici (post hoc)" olarak etiketlenir. Kaynak notlar: `notlar/adim8-hoca-karari-egim-ikili-karo-bina.md`, `notlar/adim8-test-sonucu.md`. Plan: yol haritası Adım 8B.
 
 ## 1. Hipotezler
