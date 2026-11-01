@@ -1,6 +1,6 @@
 # RAGEarthQuake/ → deprem-vlm-rag/ taşıma listesi (28 Ekim 2026)
 
-Eski klasör (`RAGEarthQuake/`) silinmedi/değiştirilmedi; aşağıdakiler **kopyalandı**.
+**Durum: TAMAMLANDI (28 Ekim 2026).** Aşağıdakiler `RAGEarthQuake/` altındaki eski `Kod/` ve `Veri/` klasörlerinden **kopyalandı**; eski `Kod/` ve `Veri/` (yedek BRIGHT görüntüleri dahil) aynı gün Melih'in onayıyla silindi, eski kopyalar `_arsiv/` altında. Tablodaki `Kod/...` ve `Veri/...` yolları artık geçerli değildir (tarihsel kayıt).
 
 | Eski yer | Yeni yer | Not |
 |---|---|---|

@@ -32,8 +32,15 @@ ChangeOS'tan yalnız bina yerelleştirme/sayı ve "yıkık var" pozitifleri kan�
 | İkincil | H1: B > A (RQ1); B → B+; H1a (ara dereceler); H5 (+U) | Betimleyici / risk–kapsama |
 | Keşifsel | kâhin-görsel kolu; kalan ablation'lar | Ek |
 
-## KB sonucu (Adım 10)
+## KB sonucu (Adım 10) — 31 Ekim 2026'da sonuçlandı, bkz. en alttaki bölüm
 B+ bilgiyi gömer, C/D erişir. Gömülecek KB sürümü token olarak sayılır; sığmazsa gömülü kısım = çekirdek tablo, kural test'e bakmadan yazılır; B+ ve C aynı çekirdeği görür.
 
 ## Yapılandırma
 `config/base.yaml` kol listesi taşımıyor; kollar Adım 11'de istem dosyalarıyla (sürümlü) tanımlanır.
+
+## Güncelleme (31 Ekim 2026) — B+ gömme bütçesi kararı
+Kollar, kol tasarımı ve hipotez kademeleri DEĞİŞMEDİ; yalnız yukarıdaki koşullu kural ("sığmazsa çekirdek") sonuçlandı.
+- Qwen3 tokenizer ile ölçüm (KB v1.0): tam KB (41 aktif kayıt) = 3.849 token; çekirdek (30 kayıt) = 2.488 token. KB v1.1 (45 kayıt) için beklenti ≈ 4,7 K token; Kaggle'da yeniden ölçülecek.
+- **Karar (Melih, 31 Ekim 2026): seçenek A.** B+ prompt'unda tam KB gömülür; C/D aynı KB'den arar. Çekirdek tablosu elendi. Gerekçe: çekirdek seçimi bizim kararımız olur ve hakem itirazına açıktır; erişim tek değişken kalır.
+- **Açık:** KB tamamı prompta sığdığı için B+ ≥ C çıkabilir. H3'ün çerçevesi ("erişim küçük KB'de de kazandırır" mı, yoksa "erişim KB prompta sığmayacak kadar büyüdüğünde gerekir" mi) hocalarla konuşulacak; ikincisiyse KB büyütülüp ikinci ölçüm gündeme gelir. H3 kaydı (C > B+) bu karardan etkilenmez, yorumlanışı etkilenir.
+- KB dili: İngilizce (istem, rapor, hakem, indeksli KB metni); Türkçe resmî terimler `term_tr`'de (Adım 9 kararı, 30 Ekim).

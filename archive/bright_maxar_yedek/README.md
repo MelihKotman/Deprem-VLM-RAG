@@ -5,7 +5,7 @@ Makale 1 veri seti: BRIGHT (Chen ve ark., ESSD 2025, DOI 10.5194/essd-17-6217-20
 - 1.114 karo, 1024x1024 (BRIGHT ızgarası, EPSG:32637). `pre/` öncesi optik, `post/` Maxar sonrası optik, `label/` etiket (0 arka plan, 1 sağlam, 2 hasarlı, 3 yıkık).
 - `manifest.csv`: karo, şehir, bölme, sınırlar, sonrası tarih/off-nadir/GSD, kaynak COG, sonrası ve öncesi görüntüde boş (siyah) piksel oranı (`blank_frac`, `pre_blank_frac`), sınıf pikselleri.
 - Bölme (şehir düzeyi): dev = Adıyaman, Malatya, Kahramanmaraş, İslahiye (624 karo; eğitim + şehir-bırakmalı doğrulama); test = Antakya/Defne, Osmaniye, Gaziantep (490 karo; yalnızca son değerlendirme).
-- Yeniden üretmek için: `Kod/M1/01_veri_hazirlama_bright_maxar_yedek.ipynb` (yeniden başlatılabilir; eski betik kaldırıldı).
+- Yeniden üretmek için: bu klasördeki `01_veri_hazirlama_bright_maxar_yedek.ipynb` (yeniden başlatılabilir; eski betik kaldırıldı). Eski `Kod/` ve `Veri/` klasörleri 28 Ekim 2026'da silindi; notebook'un proje-kökü bulucusu eski düzeni beklediği için yeniden çalıştırılırsa `RAG_PROJE` ortam değişkeni ayarlanmalı.
 
 ## Hizalama (kayma)
 Etiketler öncesi (nadire yakın) geometriye göre çizildiği için sonrası görüntüde konturlar çatılardan kayık görünebilir (en çok Adıyaman/Malatya ≈44°). Daha düşük açılı Maxar sahnesi yok (STAC'te denetlendi). xBD ve BRIGHT'taki gibi **referans öncesi + etiket, taşınan şey sonrası görüntü**:

@@ -10,7 +10,7 @@ KB_BACKEND=local (varsayılan, Kaggle GPU, açık ağırlık) | evren. Ön-kayı
 import json, math, os, re, sys, time, hashlib, collections
 from pathlib import Path
 KB = Path(__file__).resolve().parent.parent / "kb"
-VER = "kb_v1.0"
+VER = os.environ.get("KB_VER", "kb_v1.0")   # v1.1 için: KB_VER=kb_v1.1
 REQ = ["id", "kaynak_id", "kaynak_türü", "sürüm", "topic", "text_en", "term_tr", "remote_observable", "dogrulama", "yer", "durum"]
 SRC = {"ems98", "genelge_2014", "yonetmelik_2025", "disasterm3", "aydogdu2023", "map"}
 TUR = {"kaynaktan_özet", "bizim_üretim"}

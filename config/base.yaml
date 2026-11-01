@@ -42,16 +42,16 @@ models:                     # Adım 8 ve 12'de doldurulur: ad + sürüm + tarih 
   llm_open:  {api: evren, api_name: null, version: null, temperature: 0}
   closed:    {api: gemini, api_name: null, version: null, temperature: 0}
   judges:    []             # en az 2, farklı model ailelerinden
-  embedding: {api: evren, api_name: qwen3-embedding-8b}
-  rerank:    {api: evren, api_name: qwen3-reranker-8b}
+  embedding: {api: local, api_name: Qwen/Qwen3-Embedding-4B, hardware: kaggle_t4_fp16, backup: {api: evren, api_name: qwen3-embedding-8b, status: endpoint_unverified}}   # Adım 10 (30 Ekim 2026) yerel açık ağırlıkla koşuldu
+  rerank:    {api: local, api_name: Qwen/Qwen3-Reranker-4B, hardware: kaggle_t4_fp16, backup: {api: evren, api_name: qwen3-reranker-8b, status: endpoint_unverified}}
 
 archive_policy:             # her API çağrısında
   save_raw_output: true
   record: [api_name, evren.routed_model, date_utc, latency_s, tokens]
 
 kb:
-  version: null             # Adım 10: kb_v1.0
-  language: tr
+  version: null             # Adım 10: kb_v1.0 veya kb_v1.1 — B+/C/D'de hangisinin kullanılacağı henüz seçilmedi
+  language: en              # 30 Ekim 2026 (Adım 9): çalışma dili İngilizce (istem, rapor, hakem, indeksli KB metni); Türkçe resmî terim KB'de term_tr alanında
   report_language: en
 
 public_data_only: true      # EVREN'e yalnız kamuya açık veri gönderilir

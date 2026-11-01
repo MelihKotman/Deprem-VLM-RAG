@@ -8,7 +8,7 @@ Akış sırasıyla; her adım bir notebook. Çıktıları temizlenmiş halde com
 | `02_denetim_sayfalari.ipynb` | Adım 6 (hazır; Kaggle'da çalışır) |
 | `03_sizinti_ve_gecerlilik.ipynb` | Adım 7 (sızıntı kontrolü + geçerlilik maskesi; Kaggle, CPU) |
 | `04_gorsel_model.ipynb` | Adım 8 kutu 3: ChangeOS pilotu (Kaggle GPU; protokol `docs/adim8_pilot_kaggle.md`) — koşuldu, pilot KAPANDI (29 Ekim) |
-| `10_rag.ipynb` | Adım 10 (planlı; eski adı `06_rag`, numaralar 05–09 kullanıldığı için yeniden numaralandı) |
+| `10_kb_indeks_sorgu.ipynb` | Adım 10: KB gömme, hibrit erişim ve 20 sorgu değerlendirmesi (Kaggle GPU; yerel Qwen3-Embedding-4B + Qwen3-Reranker-4B; sürüm `KB_VER` ile seçilir). Koşuldu: `kb_v1.0` ön-kayıtlı ölçütü geçti; v1.1 yeniden koşusu açık. Eski planlı adı `10_rag` / `06_rag` |
 | `11_vlm_llm_kollar.ipynb` | Adım 11–13: kollar A, B, B+, C, D, +U (planlı) |
 | `12_degerlendirme.ipynb` | Adım 14 (planlı) |
 
